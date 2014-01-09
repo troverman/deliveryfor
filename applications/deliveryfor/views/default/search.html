@@ -1,0 +1,149 @@
+{{extend 'layout.html'}}
+<style>
+	a{
+
+    cursor:pointer;
+
+    }
+	a:hover{
+
+        text-decoration:none;
+
+    }
+
+</style>
+
+<div id="search_bar" style="margin-left:5%">  
+<br>  
+<form action="#" enctype="multipart/form-data" method="post">	
+<table>
+<tbody>
+	
+	<tr>
+	
+	<td class="w2p_fw">
+        <input class="string" id="user_search_user_location" autocomplete="on" onkeyup="getData(this.value);" name="user_location" value="{{=search_form_user_location}}" placeholder="address" type="text">
+    {{if session.auth is None:}}
+    {{else:}}
+	<div id="ajaxresults"></div>
+	{{pass}}
+	</td>
+    <td class="w2p_fc">
+    <td class="w2p_fc">
+    <a id="geolocate" class="geolocate btn"><i class="icon-map-marker"></i></a>
+    </td>
+	<td class="w2p_fc"></td>
+	<td class="w2p_fc"></td>
+
+	
+	
+        <td class="w2p_fw"><input class="integer" id="user_search_radius" name="radius" value ="{{=search_form_radius}}" type="text" style="width:100px;"  placeholder="radius"><select style="width:60px;">
+  		<option value="volvo">mi.</option>
+  		<option value="saab">km.</option>
+		</select> </td>
+	<td class="w2p_fc"></td>
+	<td class="w2p_fc"></td>
+
+	
+	<td class="w2p_fw"><input class="string" id="user_search_details" name="details" value="{{=search_form_details}}" type="text" style="width:100px;" placeholder="any details?"></td>
+	<td class="w2p_fc"></td>
+	
+
+	<td class="w2p_fl"></td>
+        <td class="w2p_fw">
+        <button type="submit" class="btn btn-success"><i class=" icon-search icon-white"></i></button>
+        </td>
+	<td class="w2p_fc"></td>
+	
+	</tr>
+	
+</tbody>
+</table>
+	
+<div style="display: none;" class="hidden">
+	<input name="_formname" value="test" type="hidden">
+</div>
+
+</form>	
+
+</div>
+<hr>
+
+
+
+
+
+
+
+
+
+
+<div style="margin-left:5%;margin-right:5%">
+
+    <a id="filter"><h4>Filter <i class="icon-filter"></i></h4></a><hr>
+<div id="filter-content">
+
+details
+type
+only show users with at least x stars
+only show users with at least x reviews
+only show places with at least x stars
+only show places with at least x reviews
+
+sorting options
+view by user rating
+place rating
+distance
+
+<hr>
+
+</div>
+
+
+
+{{counter_array=[1,2,3,4,5,6,7,8,9,10]}}
+{{for x in counter_array:}}
+<div id="search_item">
+    <a id="search_item_title-{{=x}}"><h1>Location Name {{=x}}</h1></a><hr>
+    <div id="search_item_content-{{=x}}" style="margin-left:15px;">
+
+    <h3>Details</h3>
+    <div id="loaction_details">
+    
+        location:{{=search_form_user_location}}<br>
+    radius:{{=search_form_radius}}<br>
+    details:{{=search_form_details}}	
+			
+{{=selected_locations}}
+    
+    I am a detail
+    Address
+    Phone Number
+    Coupon
+        <h3>Available Users</h3>
+
+    
+<hr><br>   
+
+ 
+</div> 
+</div>
+
+<script>
+
+$("#search_item_title-{{=x}}").click(function () {
+$("#search_item_content-{{=x}}").slideToggle();});
+
+</script>
+{{pass}}
+
+
+</div>
+
+<script>
+
+$("#filter-content").hide();
+$("#filter").click(function () {
+$("#filter-content").slideToggle();});
+        
+</script>

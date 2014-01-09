@@ -1,0 +1,366 @@
+{{extend 'layout.html'}}
+    
+    <style type=text/css>
+    
+    div.userpictures{
+        
+        border-top:2px solid rgb(240,240,240);
+        border-bottom:2px solid rgb(240,240,240);
+        
+        padding-left:2px;
+        padding-right:2px;
+        padding-top:4px;
+        padding-bottom:4px;
+
+    }
+    
+    
+
+    
+</style>
+
+<table style="margin-left:5%;margin-right:5%">
+<tr>
+	<td>
+        <h1>{{=request.args(0)}}</h1>
+    </td>
+    <td style="padding:0px">
+        <p class="lead" style="margin-top:22px;margin-left:10px;font-size:18px;">{{=profile_firstname}} {{=profile_lastname}}</p>
+    </td>
+    <td>
+		<p class="lead" style="margin-top:20px;margin-left:10px;font-size:18px;">status</p>
+    </td>
+</tr>
+</table>
+
+
+
+<div id="userpictures" class="userpictures">
+
+    <div id="userimages" style="margin-left:5%;margin-right:5%">
+        {{import random}}
+        {{random_picture_array=sorted(user_picture_array, key=lambda *args: random.random())}}
+        {{for picture in random_picture_array:}}
+            	<img src="{{=URL('download',args=picture)}}" style="height:190px;" class="img-polaroid" />
+        {{pass}}
+
+</div>
+
+</div>
+<div style="margin-left:5%;margin-right:5%">
+
+
+
+<br>
+
+<h1>{{=A('ratings', _href=URL('ratings'))}} average - count</h1><hr>
+
+		    		
+            
+{{for the_counter, location_rating in enumerate(location_rating_array):}}
+    <table>
+        <tr>
+            {{count=0}}   
+            <td><p class="lead">{{=location_rating['rating']}}</p></td>                 	
+            {{while count < location_rating['rating']:}}
+            	{{count = count + 1}}                    	
+            	<td style="padding:0px;padding-top:5px;"><img src="/static/images/star.png"/></td>
+            {{pass}}
+            <td>
+                <a id="edit-rating-expand-{{=the_counter}}">
+                {{if location_rating['rater_id'] == auth.user_id:}}
+                    <i class="icon-edit" style="margin-top:7px;margin-left:5px;"></i>
+                {{pass}}
+                </a>
+            </td>
+        </tr>
+    </table>
+    <hr style="margin-top:-30px;margin-left:10px;">                	                 
+    <p class="lead" style="margin-left:20px;width:100%">{{=location_rating['description']}}</p>
+                        
+    {{if location_rating['rater_id'] == auth.user_id:}}    
+        <div id = "edit-rating-form-{{=the_counter}}">
+        	<div style="margin-left:30px;"><hr>{{=form_rate_location_edit_array[the_counter]}}</div><hr><br>
+        </div>
+    {{pass}}   
+{{pass}}            
+
+    
+<h1>details</h1><hr>
+    <p class="lead">{{=about}}</p>
+    <h3>current location: {{=current_location}}</h3>
+    
+
+    <p class="lead">delivery radius: {{=radius}}</p>
+
+ 	<p class="lead">minimum order price:</p>
+    <p class="lead">maximum concurrent orders:</p>
+    
+    
+<h4><a id="availibility-expand">availabilities<b class="caret" id="user-caret" style=""></b><i class="icon-time" style="margin-top:7px;margin-left:20px;"></i></a></h4><hr>    
+<div id="user_availibility-form">
+<table style="margin-left:15px;" id = "" class="modified_table">
+{{count10 = 0}}
+{{count20 = 0}}
+{{count30 = -1}}
+
+ {{if len(availability_id_array) > 0:}}
+<tr>
+    <td>
+		<table class="modified_table">
+			<tr>
+        		<td style="width:340px"><h4>start time</h4></td>
+        		<td style="width:200px"><h4>end time</h4></td>
+			</tr>
+		</table>
+    </td>
+</tr>
+{{else:}}
+{{pass}}
+	
+{{for start_availability in start_availability_array:}}
+
+    {{count10 = count10 + 1}}
+	{{for end_availability in end_availability_array:}}
+
+    	{{count20 = count20 + 1}}
+    	{{count30 = count30 + 1}}
+    	{{if count10 == count20:}}
+
+    	<tr>
+    		<td>
+    		    <table class="modified_table">   			    		
+    		    		
+    				<tr>
+            			<td style="width:340px;"><p class="lead" style="font-size:12pt;">{{=start_availability}}</p></td>
+            			<td style="width:200px"><p class="lead" style="font-size:12pt;">{{=end_availability}}</p></td>
+					</tr>
+    	
+                </table>
+            </td>
+    	</tr>
+    	
+    {{pass}}
+    
+    {{pass}}
+    
+    {{count20 = 0}}
+    {{count30 = -1}}
+    
+    {{pass}}
+    </table>
+</div>    
+    
+        
+    
+    
+    
+    
+    
+    
+    
+        
+    
+    
+    <h4><a id="fee-expand">fees<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-top:7px;margin-left:20px;"></i></a></h4><hr>
+
+<div id="user_fee-form">
+<table id = "user_fee-form" style="margin-left:25px;" class="modified_table">
+{{count200 = 0}}
+{{count300 = -1}}
+
+{{for fee_id in fee_id_array:}}
+
+    	{{count200 = count200 + 1}}
+    	{{count300 = count300 + 1}}
+    	
+    	<tr>
+    		<td>
+				<table class="modified_table">
+    				<tr>
+        				<td style="width:150px"><h4 style="margin-left:-10px">{{=complete_fee_array[10][count300]}}</h4></td>
+    				</tr>
+        		</table>
+            </td>
+    	</tr>
+        <tr>
+    		<td>
+        		<table class="modified_table">
+    				<tr>
+                        {{if int(complete_fee_array[1][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Flat Rate: {{=complete_fee_array[1][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                        {{if int(complete_fee_array[2][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Percentage: {{=complete_fee_array[2][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                                    
+                        {{if int(complete_fee_array[3][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Per Distance: {{=complete_fee_array[3][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                       {{if int(complete_fee_array[4][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Per Hour: {{=complete_fee_array[4][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                        {{if int(complete_fee_array[5][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Min Amount: {{=complete_fee_array[5][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}}
+                         
+                        {{if int(complete_fee_array[6][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">Max Amount: {{=complete_fee_array[6][count300]}}<p></td>
+                        {{else:}}
+                        {{pass}} 
+                                    
+                        {{if complete_fee_array[7][count300] is True:}}
+            
+                        <td style="width:200px"><p class="lead" style="font-size:14px">Active<p></td>
+            
+                        {{else:}}
+                        
+                        <td style="width:200px"><p class="lead" style="font-size:14px">Not Active<p></td>
+                        
+                        {{pass}}
+                        
+            		</tr>
+        	</table>
+		</td>
+	</tr>
+    {{pass}}
+    </table>
+    </div>
+    
+   
+
+<h3>{{=A('stats', _href=URL('recent'))}}</h3><hr>
+<div id="member-stats">
+	<script type="text/javascript">
+		{{an_array=[]}}
+		{{import time}}
+		{{array = [1,2,3,4,5]}}
+		{{for counter, value in enumerate(array):}}
+			{{an_array.append([ value*1000, int(value) ])}}
+		{{pass}}
+                            
+		$(function() {
+                        
+            var data = '';
+            var show_graph_lines = true;
+            if (data == ''){data = {{=an_array}};}
+                            
+            var options = {
+                series: {
+                    lines: {
+                        show: true
+                    },
+                    points: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                },
+                xaxis:{
+                    mode:"time",
+                },
+                yaxis: {
+                    show: true,
+                },
+                selection: {
+                    mode: "x"
+                },
+            };
+    
+            var placeholder = $.plot("#placeholder", [data], options);
+                    
+            $("#placeholder").bind("plotselected", function (event, ranges) {
+                placeholder = $.plot("#placeholder", [data], $.extend(true, {}, options, {
+                    xaxis: {
+                        min: ranges.xaxis.from,
+                        max: ranges.xaxis.to
+                    },
+                    lines: { show: show_graph_lines },
+                    points: { show: true }
+                }));
+                overview.setSelection(ranges, true);
+            });	
+            
+                                        
+            function showTooltip(x, y, contents) {
+                $("<div id='tooltip'>" + contents + "</div>").css({
+                    position: "absolute",
+                    display: "none",
+                    top: y + 5,
+                    left: x + 5,
+                    border: "1px solid #fdd",
+                    padding: "2px",
+                    "background-color": "#fee",
+                    opacity: 0.80
+                }).appendTo("body").fadeIn(200);
+            }
+                    
+            var previousPoint = null;
+            $("#placeholder").bind("plothover", function (event, pos, item) {               
+                var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
+                $("#hoverdata").text(str);
+                                           
+                if (item) {
+                    if (previousPoint != item.dataIndex) {
+                        previousPoint = item.dataIndex;
+                        $("#tooltip").remove();
+                        var x = item.datapoint[0].toFixed(2),
+                        y = item.datapoint[1].toFixed(2);
+                        showTooltip(item.pageX, item.pageY,
+                        item.series.label + " of " + x + " = " + y);
+                    }
+                } else {
+                    $("#tooltip").remove();
+                    previousPoint = null;            
+                }			
+            });
+                    
+            $("#placeholder").bind("plotclick", function (event, pos, item) {
+                if (item) {
+                    $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                    plot.highlight(item.series, item.datapoint);
+                }
+            });        	
+        });	
+	</script>
+
+	<div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
+</div>
+	
+<h3>available locations / items</h3><hr>
+
+    {{if delivery_profile_id:}}
+    	{{if request.args(0)==session.auth.user.username:}}
+
+    		<a href="/user/profile/">edit</a>
+
+		{{pass}}
+    {{pass}}
+
+</div>
+
+
+
+
+<script>
+
+
+        $("#user_availibility-form").show("slow");
+        $("#availibility-expand").click(function () {
+        $("#user_availibility-form").slideToggle();});
+        
+		$("#user_fee-form").show("slow");
+        $("#fee-expand").click(function () {
+        $("#user_fee-form").slideToggle();});
+
+</script>

@@ -1,0 +1,95 @@
+{{extend 'layout.html'}}
+<style>
+#contentwrapper{width: 100%;}               
+#content { //margin: 0 280px 0 180px; /*Margins for content column. Should be "0 RightColumnWidth 0 LeftColumnWidth*/}
+#right { 
+        float: right;
+        width: 255px;
+    	border-left:1px solid rgb(238,238,238);
+		border-bottom:1px solid rgb(238,238,238);
+        padding-left:15px;
+		padding-right:15px;
+		padding-bottom:15px;
+}
+#left { 
+        float: left;
+        width: 175px;
+    	border-right:1px solid rgb(238,238,238);
+		border-bottom:1px solid rgb(238,238,238);
+        padding-left:15px;
+		padding-bottom:15px; 
+}
+#collapsed-left {
+        float: left;
+		border-bottom:1px solid rgb(238,238,238);
+    	border-right:1px solid rgb(238,238,238);
+    	padding-left:7px;
+		padding-right:7px;
+}
+#collapsed-left:hover {
+        float: left;
+    	padding-left:7px;
+		padding-right:7px;
+		background-color:rgb(245,245,248);
+        border-right:1px solid rgb(235,235,238);
+		border-bottom:1px solid rgb(235,235,238)
+}
+#collapse-left {
+        padding-left:5px;
+        padding-right:5px;
+        float:right;
+        border-left:1px solid rgb(238,238,238);
+        border-bottom:1px solid rgb(238,238,238);
+}
+#collapse-left:hover {
+        padding-left:5px;
+        padding-right:5px;
+        float:right;
+        background-color:rgb(245,245,248);
+        border-left:1px solid rgb(235,235,238);
+		border-bottom:1px solid rgb(235,235,238) 
+}
+</style>
+<div id="location-image">  		 
+	{{for picture in item_picture_array:}}
+		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
+	{{pass}} 		 
+</div>	
+<h1>items</h1><hr>
+
+<div id="collapsed-left" style="display:none;">
+    <a id="open-left">
+        <div style="">
+        	<h5 title="expand" style="margin:0px;padding:3px;"> >> </h5>
+        </div>
+    </a>
+</div>
+
+<div id="left">
+    <a id="collapse-left"> <h5 style="margin:0px;padding:3px;" title="minimize"> << </h5> </a>
+    item tags<br>
+	{{for x in range(25):}}
+    	<p><a>tag {{=x}}</a></p>
+    {{pass}}
+	<br>
+</div>
+<br>
+<div id="right">
+	{{for x in range(10):}}
+	various locations<br>
+	{{pass}}
+	{{for x in range(10):}}
+	suggested locations<br>
+	{{pass}}
+	{{for x in range(10):}}
+	online members locations<br>
+	{{pass}}
+</div>
+<div id="contentwrapper">
+    <div id="content" style="border-right:1px solid rgb(238,238,238);padding:5px;">
+		filters<br>
+		{{for x in range(10):}}
+			<h4><a href="/item/{{=x}}">{{=x}}</a></h4>
+		{{pass}}
+    </div>
+</div>

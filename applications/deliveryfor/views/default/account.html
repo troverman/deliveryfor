@@ -1,0 +1,599 @@
+{{extend 'layout.html'}}
+<style type="text/css">
+    td.w2p_fl{
+        //display:none;
+        color:rgb(150,150,150);
+    }
+    tr#delivery_profile_id__row{display:none;}
+    div.margin-profile{margin-left:10px;}
+    a{cursor:pointer;}
+    a:hover{text-decoration:none;}
+    hr{margin:0px}
+</style>
+
+
+<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script src="{{=URL('static','js/gmaps.js')}}"></script>
+<script>   
+  $(document).ready(function(){                                                         
+  map = new GMaps({
+  {{lat_sum=0}}
+  {{lng_sum=0}}
+  {{counting = 0}}
+  {{for latlng in lat_lng_array:}}
+    {{counting = counting + 1}}
+    {{lat_sum=lat_sum + latlng[0]}}
+    {{lng_sum=lng_sum + latlng[1]}}                                        
+  {{pass}}
+          
+  {{if len(lat_lng_array) == 0:}}   
+    {{lng_avg = 0}}
+    {{lat_avg = 0}}
+  {{else:}}
+    {{lng_avg = lng_sum / counting}}
+    {{lat_avg = lat_sum / counting}}      
+  {{pass}}
+  div: '#map',
+  //zoom:7, 
+  lat:{{=lat_avg}},
+  lng:{{=lng_avg}}    
+  }); 
+                     
+    {{import random}}       
+    {{for lat_lng in lat_lng_array:}}
+      map.addMarker({
+      lat: {{=lat_lng[0]}},
+      lng: {{=lat_lng[1]}},
+      title: '{{=lat_lng[4]}}',
+      infoWindow: { 
+      content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+      <a href="/member/{{=lat_lng[4]}}">{{=lat_lng[4]}}</a><hr>\
+      <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+      <td>{{=lat_lng[2]}}</td></tr></table>\
+      </div></div>'
+      }
+      });
+      map.drawCircle({
+      lat: {{=lat_lng[0]}},
+      lng: {{=lat_lng[1]}},
+      radius: 1000   
+      });
+    {{pass}} 
+  map.fitZoom();
+  }); 
+</script>      
+
+<div style="border-bottom:4px solid rgb(51,102,153);">
+    <div style="width:100%; height:350px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
+</div>
+
+
+
+<div id="user_form" style="">
+
+{{if request.args(0)=='login':}}
+
+	{{include 'login_area.html'}}
+{{elif request.args(0)=='register': }}
+	{{include 'login_area.html'}}
+
+{{elif request.args(0)=='request_reset_password': }}
+    {{=BEAUTIFY(form1)}}
+
+{{elif request.args(0) is None:}}
+    
+<div style="margin-left:5%;margin-right:5%;">
+    <br>    
+    <h1><a href="/orders">orders</a><a id="orders-expand"><b class="caret" id="user-caret" style=""></b><i class="icon-briefcase" style="margin-top:22px;margin-left:20px;"></i></a></h1><hr>
+    <div class="margin-profile">
+        <table style="margin-left:15px;" id="orders-form">                  
+                <tr>
+                    <td style="width:340px"><h4><a href="mylocations">order location</a></h4></td>       
+                    <td style="width:200px"><p class="lead" style="font-size:12pt;">details, delivery member, costs, date, items</p></td>           
+                    <td><a id ="edit-count"><i class="icon-briefcase" title="Orders" style="margin-top:5px"></i></a></td>       
+                </tr>  
+        </table>
+    </div>
+    <script>
+            $("#orders-form").show("slow");
+            $("#orders-expand").click(function () {
+            $("#orders-form").slideToggle();});
+    </script>
+    <br>
+
+<h1><a id="locations-expand">locations<b class="caret" id="user-caret" style=""></b><i class="icon-map-marker" style="margin-top:22px;margin-left:20px;"></i></a></h1><hr><br>
+<div id = "locations-form">
+<table style="margin-left:15px;" id = "" class="modified_table">
+{{count1 = 0}}
+{{count2 = 0}}
+{{count3 = -1}}
+{{for address in address_array:}}
+    {{count1 = count1 + 1}}
+    {{for description in description_array:}}       
+        {{count2 = count2 + 1}}
+        {{count3 = count3 + 1}}
+        {{if count1 == count2:}}        
+        <tr>
+            <td>
+                <table class="modified_table">                          
+                    <tr>
+                        <td style="width:340px; position"><h4><a onclick="clickroute{{=lat_lng_array[count3]}}">{{=address}}</a></h4></td>
+                        <td style="width:200px"><p class="lead" style="font-size:12pt;">{{=description}}</p></td>
+                        <td><a id ="edit-{{=count2}}"><i class="icon-edit" title="Edit" style="margin-top:5px"></i></a></td>
+                        <script>
+                        function clickroute(lat,lng) {
+                            var latLng = new google.maps.LatLng(lat,lng); //Makes a latlng
+                            map.panTo(latLng); //Make map global
+                        }
+                        </script>
+                    </tr>
+                </table> 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="modified_table_remove_padding">
+                    <tr>
+                        <td>
+                            <div id="edit-form-{{=count2}}" style="display:none;margin-left:15px;">
+                                {{=form_location_edit_array[count3]}}    
+                            </div>
+                        </td>
+                    </tr>
+                </table> 
+            </td>
+        </tr>
+        <script>    
+            $("#edit-form-{{=count2}}").show("slow");
+            $("#edit-form-{{=count2}}").hide();
+            $("#edit-{{=count2}}").click(function () {
+            $("#edit-form-{{=count2}}").slideToggle();});
+        </script>
+        {{pass}}
+    {{pass}}
+    {{count2 = 0}}
+    {{count3 = -1}}
+{{pass}}
+</table>
+<div id="newlocation" style="margin-left:25px;"><a>+new location</a></div>
+    <div id="newlocation-form" style="display:none;margin-left:35px"><hr><br>
+        {{=form_newlocation}}  <br>
+    </div>
+<br></div>
+<script>  
+        $("#newlocation-form").show("slow");
+        $("#newlocation-form").hide();
+        $("#newlocation").click(function () {
+        $("#newlocation-form").slideToggle();});
+        $("#locations-form").show("slow");
+        $("#locations-expand").click(function () {
+        $("#locations-form").slideToggle();});
+</script>
+
+<h1><a id="ratings-expand">ratings<b class="caret" id="user-caret" style=""></b><i class="icon-star-empty" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr>
+<div class="margin-profile">
+<table style="margin-left:15px;" id = "ratings-form">
+        <tr>
+            <td style="width:340px"><h4><a href="mylocations">rating</a></h4></td>
+            <td style="width:200px"><p class="lead" style="font-size:12pt;">username</p></td>
+            <td><a id ="edit-count"><i class="icon-edit" title="Orders" style="margin-top:5px"></i></a></td>
+            <td><a id ="edit-count"><i class="icon-remove" title="Orders" style="margin-top:5px"></i></a></td>
+        </tr>
+</table>
+</div>
+<script>
+        $("#ratings-form").show("slow");
+        $("#ratings-expand").click(function () {
+        $("#ratings-form").slideToggle();});
+</script>
+<br>
+
+    <h1><a id="information-expand">{{=T( 'information' )}}<b class="caret" id="user-caret" style=""></b><i class="icon-user" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr><br>
+	<div class="margin-profile" id="information-form" style="margin-left:30px;"> 
+       {{=edit_user_information}}
+    </div>
+
+	<h1><a id="settings-expand">{{=T( 'settings' )}}<b class="caret" id="user-caret" style=""></b><i class="icon-wrench" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr><br>
+        
+	<div class="margin-profile" id="settings-form" style="margin-left:30px;">
+           
+		<h4><a id="account_associations-member">account associations</a></h4>
+		<div id="account_associations-member-form" style="display:none">
+			<hr>
+			<div style="margin-left:30px">                              
+				<h3>facebook</h3>
+				<h3>google</h3>
+				<h3>twitter</h3>
+				<h3>paypal</h3>
+				<h3>bankingfor</h3>
+				<h3>epoint.me</h3>
+				<h3>conex.us</h3>
+            <hr><br>
+            </div>
+        </div>
+           
+	   <h4><a id="general_settings">general</a></h4>
+		<div id="general_settings-form"style="display:none;"><hr>             
+        <div style="margin-left:30px">  
+            {{=form_user_settings_general}}                                                   
+        <hr>
+        <br> 
+        </div>   
+        </div>              
+                	
+		<h4><a id="change_password">password</a></h4>
+        <div id="change_password-form" style="display:none">
+            <hr>
+            <div style="margin-left:30px;">
+                        {{=auth.change_password()}}
+                <hr>
+                <br>
+            </div>
+        </div>
+		
+		<h4><a id="settings_notifications">notifications</a></h4>
+            <div id="settings_notifications-form" style="display:none;">
+            <hr>
+            <div style="margin-left:30px;">
+                {{=form_user_settings_notifications}}           
+                <hr>
+            </div>
+            <br>
+        </div>
+        <br>
+        
+    </div>
+  <h1><a id="delivery-info-expand">{{=T( 'delivery profile' )}}<b class="caret" id="user-caret" style=""></b><i class="icon-info-sign" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr>
+
+	<div id="delivery-info-form" style="margin-left:30px;">
+
+{{if not delivery_profile_id:}}
+
+    {{include 'create_delivery_profile.html'}}
+
+{{else:}}
+
+<div class="margin-profile">
+<br>
+<a href="/member/{{=session.auth.user.username}}">view delivery profile</a>
+<br><br>
+<h3><a id="availibility-expand">availabilities<b class="caret" id="user-caret" style=""></b><i class="icon-time" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr>
+
+<div id="user_availibility-form">
+<table style="margin-left:15px;" id = "" class="modified_table">
+{{count10 = 0}}
+{{count20 = 0}}
+{{count30 = -1}}
+
+ <tr>
+    <td>
+        <table class="modified_table">
+            <tr>
+                <td style="width:340px"><p>time zone</p></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+ 
+ {{if len(availability_id_array) > 0:}}
+<tr>
+    <td>
+        <table class="modified_table">
+            <tr>
+                <td style="width:340px"><h4>start time</h4></td>
+                <td style="width:200px"><h4>end time</h4></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+{{else:}}
+{{pass}}
+    
+{{for start_availability in start_availability_array:}}
+
+    {{count10 = count10 + 1}}
+    {{for end_availability in end_availability_array:}}
+
+        {{count20 = count20 + 1}}
+        {{count30 = count30 + 1}}
+        {{if count10 == count20:}}
+        <tr>
+            <td>
+                <table class="modified_table">                           
+                    <tr>
+                        <td style="width:340px;"><p class="lead" style="font-size:12pt;">{{=start_availability}}</p></td>
+                        <td style="width:200px"><p class="lead" style="font-size:12pt;">{{=end_availability}}</p></td>
+                        <td><a id ="edit-availability-{{=count20}}"><i class="icon-edit" title="Edit" style="margin-top:5px"></i></a></td>
+                    </tr>
+                </table>
+            </td>
+        </tr> 
+        <tr>
+            <td>
+                <table class="modified_table_remove_padding">
+                    <tr>
+                        <td>
+                            <div id="edit-form-availability-{{=count20}}" style="display:none;margin-left:15px" class="modified_table_remove_padding">
+                                {{=form_edit_user_availability_array[count30]}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>  
+            </td>
+        </tr>
+        <script>
+            $("#edit-form-availability-{{=count20}}").show("slow");
+            $("#edit-form-availability-{{=count20}}").hide();
+            $("#edit-availability-{{=count20}}").click(function () {
+            $("#edit-form-availability-{{=count20}}").slideToggle();});
+        </script>
+        {{pass}}
+
+    {{pass}}
+    {{count20 = 0}}
+    {{count30 = -1}}
+
+
+{{pass}}
+
+
+</table>
+
+    <a id="new-availibility" style="margin-left:25px;padding-bottom:10px">+new availability</a><br>
+    <div id="new-availibility-form" style="display:none;margin-left:35px;"><hr><br>
+        {{=form_create_user_availability}}
+    </div>
+</div>
+
+<h3><a id="fee-expand">fees<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr>
+<div id="user_fee-form">
+<table id = "user_fee-form" style="margin-left:25px;" class="modified_table">
+{{count200 = 0}}
+{{count300 = -1}}
+
+{{for fee_id in fee_id_array:}}
+
+        {{count200 = count200 + 1}}
+        {{count300 = count300 + 1}}
+        
+        <tr>
+            <td>
+                <table class="modified_table">
+                    <tr>
+                        <td style="width:150px"><h4 style="margin-left:-10px">{{=complete_fee_array[10][count300]}}</h4></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="modified_table">
+                    <tr>
+                        {{if int(complete_fee_array[1][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">flat rate: {{=complete_fee_array[1][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                        {{if int(complete_fee_array[2][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">percentage: {{=complete_fee_array[2][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                                    
+                        {{if int(complete_fee_array[3][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">per distance: {{=complete_fee_array[3][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                       {{if int(complete_fee_array[4][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">per hour: {{=complete_fee_array[4][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}} 
+                        
+                        {{if int(complete_fee_array[5][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">min amount: {{=complete_fee_array[5][count300]}}</p></td>
+                        {{else:}}
+                        {{pass}}
+                         
+                        {{if int(complete_fee_array[6][count300]) > 0:}}
+                            <td style="width:150px"><p class="lead" style="font-size:14px">max amount: {{=complete_fee_array[6][count300]}}<p></td>
+                        {{else:}}
+                        {{pass}} 
+                                    
+                        {{if complete_fee_array[7][count300] is True:}}
+            
+                        <td style="width:200px"><p class="lead" style="font-size:14px">active<p></td>
+            
+                        {{else:}}
+                        
+                        <td style="width:200px"><p class="lead" style="font-size:14px">not active<p></td>
+                        
+                        {{pass}}
+                        
+                        <td><a id ="edit-fee-{{=count200}}"><i class="icon-edit" title="Edit" style="margin-top:5px"></i></a></td>
+                    </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>    
+            <table class="modified_table_remove_padding">
+                <tr>
+                    <td>
+                        <div id="edit-form-fee-{{=count200}}" style="display:none;margin-left:15px;" class="modified_table_remove_padding">
+
+                            {{=form_edit_user_fee_array[count300]}}
+
+                        </div>
+                    </td>
+                </tr>
+            </table>        
+        </td>
+    </tr>               
+            
+            <script>
+
+            $("#edit-form-fee-{{=count200}}").show("slow");
+            $("#edit-form-fee-{{=count200}}").hide();
+            $("#edit-fee-{{=count200}}").click(function () {
+            $("#edit-form-fee-{{=count200}}").slideToggle();});
+
+            </script>
+
+{{pass}}
+
+
+</table>
+
+<a id="fee" style="margin-left:25px;margin-top:-30px;">+new fee</a><br>
+    <div id="fee-form" style="display:none;margin-left:35px;"><hr><br>
+                {{=form_create_user_fee}}
+    </div>
+
+<br>
+</div>
+
+<h3><a id="details-expand">details<b class="caret" id="user-caret" style=""></b><i class="icon-list" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr><br>
+    <div id = "details-form" style="margin-left:15px;">
+            {{=form_delivery_profile_update}}
+        <h4><a id="account_associations">account associations</a></h4>
+            <div id="account_associations-form" style="display:none">
+                <hr>
+                <div style="margin-left:30px">                 
+                        <h3>facebook</h3>
+                        <h3>google</h3>
+                        <h3>twitter</h3>
+                        <h3>paypal</h3>
+                    <hr>
+                    <br>
+                </div>
+            </div> <br> 
+    <div>
+    <h4>pictures</h4><hr>
+    <div style="margin-left:10px;margin-right:10px;">
+       <table> 
+        <tr><td>
+        <table>
+            <tr>
+                <div style="">
+                {{import random}}
+                {{random_picture_array=sorted(user_picture_array, key=lambda *args: random.random())}}
+                {{counts=0}}        
+                {{for picture in random_picture_array:}}
+                        <td><a id = "editpicture-{{=counts}}"><img src="{{=URL('download',args=picture)}}" style="height:190px;" class="img-polaroid" /></a></td>
+                        {{counts=counts +1 }}
+        
+                {{pass}} 
+                </div>               
+            </tr>
+        </table>
+        </td></tr>
+        <td><tr>
+        <table>                     
+                {{counts=0}}
+                {{for picture in user_picture_array:}}                           
+            <tr>
+                <td><div id="editpicture-form-{{=counts}}" style="display:none;margin-left:30px;"><h4 style="margin-top:15px;">edit</h4><hr>{{=form_edit_user_picture_array[counts]}}<hr><br></div></td>
+            </tr>
+        </table>
+      </td></tr>
+        <script>
+        $("#editpicture-form-{{=counts}}").show("slow");
+        $("#editpicture-form-{{=counts}}").hide();
+        $("#editpicture-{{=counts}}").click(function () {
+        
+                {{counter2 = 0}}
+                {{for picture in user_picture_array:}}  
+                {{if counter2 != counts:}}
+                  
+                    $("#editpicture-form-{{=counter2}}").hide();
+                {{pass}}
+                {{counter2 = counter2 + 1}}
+
+                {{pass}}
+        
+        $("#editpicture-form-{{=counts}}").slideToggle();});
+        
+        </script>
+        {{counts = counts + 1}}
+        {{pass}} 
+        </table>
+    </div>
+        {{=form_upload_user_images}} 
+    </div>
+    
+</div>
+</div>
+
+{{pass}}
+
+<script>
+        $("#new-availibility-form").show("slow");
+        $("#new-availibility-form").hide();
+        $("#new-availibility").click(function () {
+        $("#new-availibility-form").slideToggle();});
+
+        $("#user_availibility-form").show("slow");
+        $("#availibility-expand").click(function () {
+        $("#user_availibility-form").slideToggle();});
+        
+        $("#details-form").show("slow");
+        $("#details-expand").click(function () {
+        $("#details-form").slideToggle();});
+
+        $("#fee-form").show("slow");
+        $("#fee-form").hide();
+        $("#fee").click(function () {
+        $("#fee-form").slideToggle();});
+
+        $("#user_fee-form").show("slow");
+        $("#fee-expand").click(function () {
+        $("#user_fee-form").slideToggle();});
+</script>
+
+    </div>
+    {{else:}}       
+{{pass}}
+
+</div>
+<script language="javascript">
+		
+    $("#general_settings-form").hide();
+    $("#general_settings").click(function () {
+    $("#general_settings-form").slideToggle();});
+                
+    $("#settings_notifications-form").hide();
+    $("#settings_notifications").click(function () {
+    $("#settings_notifications-form").slideToggle();});   		
+                
+    $("#account_associations-form").hide();
+    $("#account_associations").click(function () {
+    $("#account_associations-form").slideToggle();});
+        
+	$("#account_associations-member-form").hide();
+    $("#account_associations-member").click(function () {
+    $("#account_associations-member-form").slideToggle();});
+    
+    $("#change_password-form").hide();
+    $("#change_password").click(function () {
+    $("#change_password-form").slideToggle();});
+                
+    $("#settings-form").show("slow");
+    $("#settings-expand").click(function () {
+    $("#settings-form").slideToggle();});
+                
+    $("#information-form").show("slow");
+    $("#information-expand").click(function () {
+    $("#information-form").slideToggle();});
+                
+    $("#delivery-info-form").show("slow");
+    $("#delivery-info-expand").click(function () {
+    $("#delivery-info-form").slideToggle();});
+                
+	jQuery("#web2py_user_form input:visible:enabled:first").focus();
+	{{if request.args(0)=='register':}}
+    	web2py_validate_entropy(jQuery('#auth_user_password'),100);
+	{{elif request.args(0)=='change_password':}}
+    	web2py_validate_entropy(jQuery('#no_table_new_password'),100);
+	
+	{{pass}}
+</script>

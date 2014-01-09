@@ -1,0 +1,175 @@
+{{extend 'layout.html'}}
+
+<style>
+#contentwrapper{width: 100%;}               
+#content { //margin: 0 280px 0 180px; /*Margins for content column. Should be "0 RightColumnWidth 0 LeftColumnWidth*/}
+#right { 
+        float: right;
+        width: 255px;
+    	border-left:1px solid rgb(238,238,238);
+		border-bottom:1px solid rgb(238,238,238);
+        padding-left:15px;
+		padding-right:15px;
+		padding-bottom:15px;
+}
+#left { 
+        float: left;
+        width: 175px;
+    	border-right:1px solid rgb(238,238,238);
+		border-bottom:1px solid rgb(238,238,238);
+        padding-left:15px;
+		padding-bottom:15px; 
+}
+#collapsed-left {
+        float: left;
+		border-bottom:1px solid rgb(238,238,238);
+    	border-right:1px solid rgb(238,238,238);
+    	padding-left:7px;
+		padding-right:7px;
+}
+#collapsed-left:hover {
+        float: left;
+    	padding-left:7px;
+		padding-right:7px;
+		background-color:rgb(245,245,248);
+        border-right:1px solid rgb(235,235,238);
+		border-bottom:1px solid rgb(235,235,238)
+}
+#collapse-left {
+        padding-left:5px;
+        padding-right:5px;
+        float:right;
+        border-left:1px solid rgb(238,238,238);
+        border-bottom:1px solid rgb(238,238,238);
+}
+#collapse-left:hover {
+        padding-left:5px;
+        padding-right:5px;
+        float:right;
+        background-color:rgb(245,245,248);
+        border-left:1px solid rgb(235,235,238);
+		border-bottom:1px solid rgb(235,235,238) 
+}
+</style>
+<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script src="{{=URL('static','js/gmaps.js')}}"></script>
+<script>   
+  $(document).ready(function(){                                                         
+  map = new GMaps({
+  {{lat_sum=0}}
+  {{lng_sum=0}}
+  {{counting = 0}}
+  {{for latlng in lat_lng_array:}}
+    {{counting = counting + 1}}
+    {{lat_sum=lat_sum + latlng[0]}}
+    {{lng_sum=lng_sum + latlng[1]}}                                        
+  {{pass}}
+          
+  {{if len(lat_lng_array) == 0:}}   
+    {{lng_avg = 0}}
+    {{lat_avg = 0}}
+  {{else:}}
+    {{lng_avg = lng_sum / counting}}
+    {{lat_avg = lat_sum / counting}}      
+  {{pass}}
+  div: '#map',
+  //zoom:7, 
+  lat:{{=lat_avg}},
+  lng:{{=lng_avg}}    
+  }); 
+    {{import random}}       
+    {{for lat_lng in lat_lng_array:}}
+      map.addMarker({
+      lat: {{=lat_lng[0]}},
+      lng: {{=lat_lng[1]}},
+      title: '{{=lat_lng[2]}}',
+      infoWindow: { 
+      content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+      <table><tr><td>{{=lat_lng[2]}}</td></tr></table>\
+      </div></div>'
+      }
+      });
+    {{pass}} 
+  map.fitZoom();
+  }); 
+</script>  
+<script>
+	$(document).ready(function(){                                                         
+		$("#collapse-left").click(function() {	
+			$("#left").fadeToggle(300);
+			$("#collapsed-left").delay(300).fadeToggle(300);
+		});
+		$("#open-left").click(function() {	
+			$("#collapsed-left").fadeOut(300);	
+			$("#left").delay(300).fadeIn(300);	
+		});
+	});
+</script>    
+<div style="border-bottom:4px solid rgb(51,102,153);">
+    <div style="width:100%; height:250px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
+</div>
+
+{{for lat_lng in lat_lng_array:}}
+{{=lat_lng}}
+{{pass}}
+
+<div id="location-image">  		 
+	{{for picture in location_picture_array:}}
+		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
+	{{pass}} 		 
+</div>	
+	<div id="title-area" style="padding-left:15px;background-color:rgb(250,250,250);">
+		<h1>locations</h1><hr>
+	</div>
+
+<div id="collapsed-left" style="display:none;">
+    <a id="open-left">
+        <div style="">
+        	<h5 title="expand" style="margin:0px;padding:3px;"> >> </h5>
+        </div>
+    </a>
+</div>
+
+<div id="left">
+    <a id="collapse-left"> <h5 style="margin:0px;padding:3px;" title="minimize"> << </h5> </a>
+    location tags<br>
+	{{for x in range(25):}}
+    	<p><a>tag {{=x}}</a></p>
+    {{pass}}
+	<br>
+	<p class="lead" style="text-align:center;"><a href="">view more</a>
+</div>
+
+<br>
+<div id="right">
+	{{for x in range(5):}}
+    	<p><a>item in locations with rating / random ratings of the locations with links {{=x}}</a></p>
+    {{pass}}
+    {{for x in range(5):}}
+    	<p><a>random ratings of the selected locations with links {{=x}}</a></p>
+    {{pass}}
+    {{for x in range(5):}}
+    	<p><a>available delivery members</a></p>
+    {{pass}}
+</div>
+<div id="contentwrapper">
+    <div id="content" style="border-right:1px solid rgb(238,238,238);padding:5px;">
+		<div>
+			filters, search, sort
+		</div>
+		<div id="location-list" style="padding-left:15px;float:left;">
+			{{for location in location_list:}}
+				<div id="location-list-item">
+					<h4><a href="/location/{{=location['url_title']}}">{{=location['name']}}</a></h4>
+				</div>
+			{{pass}}
+		</div>
+		<div style="clear:both;"></div>
+		<br><br><p class="lead" style="text-align:center;"><a href="">view more</a></p><br><br>
+    </div>
+</div>
+
+
+
+
+

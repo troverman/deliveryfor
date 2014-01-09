@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+<style>
+#contentwrapper{width: 100%;}               
+#content { //margin: 0 280px 0 180px; /*Margins for content column. Should be "0 RightColumnWidth 0 LeftColumnWidth*/}
+#left { 
+        float: left;
+        width: 175px;
+    	border-right:1px solid rgb(238,238,238);
+		border-bottom:1px solid rgb(238,238,238);
+        padding-left:15px;
+		padding-bottom:15px; 
+}
+</style>
+<br>
+<h1>blog</h1><hr>
+<div id="collapsed-left" style="display:none;">
+    <a id="open-left">
+        <div style="">
+        	<h5 title="expand" style="margin:0px;padding:3px;"> >> </h5>
+        </div>
+    </a>
+</div>
+
+<div id="left">
+    <a id="collapse-left"> <h5 style="margin:0px;padding:3px;" title="minimize"> << </h5> </a>
+    post tags<br>
+	{{for x in range(25):}}
+    	<p><a>tag {{=x}}</a></p>
+    {{pass}}
+	<br>
+</div>
+
+<br>
+<div id="contentwrapper">
+    <div id="content" style="border-right:1px solid rgb(238,238,238);padding:5px;">
+		<div>
+			{{for x in range(5):}}
+			<div id="">
+				this is a blog post<br>
+				this is a blog post<br>
+				this is a blog post<br>
+				this is a blog post<br>
+				this is a blog post<br>
+				this is a blog post<br>
+				this is a blog post<br>
+			</div>
+			<br><br>
+			{{pass}}
+		</div>
+	</div>
+</div>

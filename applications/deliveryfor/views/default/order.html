@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+{{if request.args(0) is None:}}
+	{{=redirect('')}}
+{{else:}}
+	
+	<div style="margin-left:5%;margin-right:5%;">
+		<br>
+		<h1>Order {{=request.args(0)}}</h1><hr>
+        {{=order_list}}
+	
+	</div>
+{{pass}}

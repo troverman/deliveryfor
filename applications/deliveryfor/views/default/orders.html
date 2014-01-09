@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+<div style="margin-left:5%;margin-right:5%;">
+	<br>
+    <h1>Orders</h1><hr>
+    <a>current</a><br>
+    <a>past</a><br>
+    <div id="order-block" style="margin-left:15px;">
+    {{for order_item in order_list:}}
+    {{if int(order_item['delivery_member_id']) == int(auth.user_id):}}
+you are the delivery member, this is your order
+    {{else:}}
+    {{pass}}
+        <h3><a href="/order/{{=order_item['id']}}">order {{=order_item['id']}}</a><a><i style="margin-top:7px;margin-left:15px;" class="icon-minus"></i></a></h3><hr>
+        <div style="margin-left:15px;">
+            delivery member:<br>
+            delivery member location:
+            {{=db(db.delivery_profile.id == order_item['delivery_member_id']).select()[0]['current_location']}}<br>
+            order status:
+            {{=order_item['order_status']}}<br>
+            estimated delivery time:
+            none<br><br>
+            <div class="progress progress-striped active">
+				<div class="bar" style="width: 40%"></div>
+			</div>
+            {{item_price_sum = 0}}
+            {{for order in order_items[order_item['id']]:}}
+            	<div style="margin-left:15px;">
+                    <h5><a href="{{=db(db.locations.id == order['location_id']).select()[0]['url_title']}}">{{=db(db.locations.id == order['location_id']).select()[0]['name']}}</a></h5>
+                    <br>
+                    <p class="lead">{{=order['order_item_description']}}</p>
+                    <br>
+                    item price:
+                    {{=order['order_item_price']}}<br>
+                    item id:
+                    {{=order['item_id']}}<br>
+                    
+                    
+                    {{item_price_sum += int(order['order_item_price'])}}
+            	</div>
+            {{pass}}
+            price_sum: {{=item_price_sum}}<br>
+            delivery_fees:<br>
+            total_price:<br>
+            <a>report</a>
+    		<br><br>
+        </div>	
+    {{pass}}
+    </div>
+    <a><p class="lead" style="text-align:center">load more</p></a>
+
+</div>

@@ -1,0 +1,144 @@
+{{extend 'layout.html'}}
+
+<br>
+<div style="margin-left:5%;margin-right:5%">
+    <h1>transparency</h1><hr>
+        
+    <h2>revenue</h2><hr>
+    <h4>donations</h4>
+    <h4>fees</h4>
+	<h4>promotions</h4>
+	<h4>ad removal</h4>
+
+
+    
+    <h2>costs</h2><hr>
+    <h2>webhosting</h2>
+    <h4>openshift</h4>
+    <h2>advertisement</h2>
+    <h4>google ads</h4>
+    <h4>facebook ads</h4>
+    <h4>youtube ads</h4>
+    <h4>lealr ads</h4>
+    <h2>employment</h2>
+    <h4>salary</h4>
+    <h2>givingfor</h2>
+    <h4>donations to the general fund</h4>
+    
+    
+    graph of costs<hr>
+    
+            
+<script type="text/javascript">
+                    {{an_array=[]}}
+                    {{import time}}
+                    {{array = [1,2,3,4,5]}}
+                    {{for counter, value in enumerate(array):}}
+                        {{an_array.append([ value*1000, int(value) ])}}
+                    {{pass}}
+                            
+                    $(function() {
+                        
+                        var data = '';
+                        var show_graph_lines = true;
+                        if (data == ''){data = {{=an_array}};}
+                        
+                        var options = {
+                            series: {
+                                lines: {
+                                    show: true
+                                },
+                                
+                                points: {
+                                    show: true
+                                }
+                            },
+                            grid: {
+                                hoverable: true,
+                                clickable: true
+                            },
+                            xaxis:{
+                                mode:"time",
+                            },
+                            yaxis: {
+                                show: true,
+                            },
+                            selection: {
+                                mode: "x"
+                            },
+                        
+                        };
+
+						var placeholder = $.plot("#placeholder", [data], options);
+                
+                        $("#placeholder").bind("plotselected", function (event, ranges) {
+                            placeholder = $.plot("#placeholder", [data], $.extend(true, {}, options, {
+                                xaxis: {
+                                    min: ranges.xaxis.from,
+                                    max: ranges.xaxis.to
+                                },
+                                lines: { show: show_graph_lines },
+                                points: { show: true }
+                            }));
+                            overview.setSelection(ranges, true);
+                        });	
+        
+                            
+                        function showTooltip(x, y, contents) {
+                            $("<div id='tooltip'>" + contents + "</div>").css({
+                                position: "absolute",
+                                display: "none",
+                                top: y + 5,
+                                left: x + 5,
+                                border: "1px solid #fdd",
+                                padding: "2px",
+                                "background-color": "#fee",
+                                opacity: 0.80
+                            }).appendTo("body").fadeIn(200);
+                        }
+                
+                        var previousPoint = null;
+                        $("#placeholder").bind("plothover", function (event, pos, item) {
+                
+                                var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
+                                $("#hoverdata").text(str);
+                            
+                                if (item) {
+                                    if (previousPoint != item.dataIndex) {
+                
+                                        previousPoint = item.dataIndex;
+                
+                                        $("#tooltip").remove();
+                                        var x = item.datapoint[0].toFixed(2),
+                                        y = item.datapoint[1].toFixed(2);
+                
+                                        showTooltip(item.pageX, item.pageY,
+                                            item.series.label + " of " + x + " = " + y);
+                                    }
+                                } else {
+                                    $("#tooltip").remove();
+                                    previousPoint = null;            
+                                }			
+                        });
+                
+                        $("#placeholder").bind("plotclick", function (event, pos, item) {
+                            if (item) {
+                                $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                                plot.highlight(item.series, item.datapoint);
+                            }
+                        });        	
+                            
+                            
+                
+                    });	
+</script>
+1<div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
+    
+    
+    do you think this is an effective way of allocating resources? check out the <a href="http://www.voetr.com/committee/deliveryfor">voetr committee</a> if you have any input.<br>
+    
+    deliveryfor is also <a href="">opensource</a><br>
+    
+    want to donate? <a href="">givingfor</a><br>
+
+</div>

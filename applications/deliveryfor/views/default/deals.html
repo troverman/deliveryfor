@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+<br>
+<div style="margin-left:5%;margin-right:5%;">
+    <h1>deals</h1><hr>
+    item tags<br>
+	{{for x in range(25):}}
+    	<h2><a>tag {{=x}}</a></h2>
+    {{pass}}
+    {{for x in range(25):}}
+    <h2><a>location {{=x}}</a></h2>
+    {{pass}}
+</div>

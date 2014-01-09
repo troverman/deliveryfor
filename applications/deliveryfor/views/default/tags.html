@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+<br>
+<div style="margin-left:5%;margin-left:5%">
+	<h1>tag</h1><hr>
+
+    {{for tag in location_tag_list:}}
+    	<h4><a>{{=tag['tag']}}</a></h4>
+    {{pass}}
+    
+</div>

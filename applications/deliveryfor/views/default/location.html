@@ -1,0 +1,654 @@
+{{extend 'layout.html'}}
+<style>
+    tr#ratings_id__row{display:none;}
+    label#rating_votes_rating_vote__label{display:none;}
+    tr#rating_votes_id__row{display:none;}
+    tr#location_item_id__row{display:none;}
+    tr#location_category_id__row{display:none;}
+    tr#location_item_options_id__row{display:none;}
+    a{cursor:pointer;}
+    a:hover{text-decoration:none;}
+    hr {margin: 0px;}
+</style>
+<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script src="{{=URL('static','js/gmaps.js')}}"></script>
+<script>   
+  $(document).ready(function(){                                                         
+  map = new GMaps({
+  {{lat_sum=0}}
+  {{lng_sum=0}}
+  {{counting = 0}}
+  {{for latlng in lat_lng_array:}}
+    {{counting = counting + 1}}
+    {{lat_sum=lat_sum + latlng[0]}}
+    {{lng_sum=lng_sum + latlng[1]}}                                        
+  {{pass}}
+          
+  {{if len(lat_lng_array) == 0:}}   
+    {{lng_avg = 0}}
+    {{lat_avg = 0}}
+  {{else:}}
+    {{lng_avg = lng_sum / counting}}
+    {{lat_avg = lat_sum / counting}}      
+  {{pass}}
+  div: '#map',
+  //zoom:7, 
+  lat:{{=lat_avg}},
+  lng:{{=lng_avg}}    
+  }); 
+                     
+    {{import random}}       
+    {{for lat_lng in lat_lng_array:}}
+      map.addMarker({
+      lat: {{=lat_lng[0]}},
+      lng: {{=lat_lng[1]}},
+      title: '{{=lat_lng[4]}}',
+      infoWindow: { 
+      content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+      <a href="/member/{{=lat_lng[4]}}">{{=lat_lng[4]}}</a><hr>\
+      <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+      <td>{{=lat_lng[2]}}</td></tr></table>\
+      </div></div>'
+      }
+      });
+      map.drawCircle({
+      lat: {{=lat_lng[0]}},
+      lng: {{=lat_lng[1]}},
+      radius: 1000   
+      });
+    {{pass}} 
+  map.fitZoom();
+  }); 
+</script>      
+
+<div style="border-bottom:4px solid rgb(51,102,153);">
+    <div style="width:100%; height:350px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
+</div>
+
+<div style="margin-left:5%;margin-right:5%;">
+    {{if session.search_history:}}
+        <a href="/search/{{=session.search_history}}">return to search</a>
+    {{pass}}
+    
+    <div style="margin-left:10px;">
+    	<br><h1>{{=location_from_url[0]['name']}}</h1><hr><br>
+	<div id="location-image">
+   		 
+		{{for picture in location_picture_array:}}
+    		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
+        {{pass}}
+   		 
+    </div>	
+    	
+<div id="location-top-block" style="margin-left:15px;">
+	<br>   
+    <p class="lead">
+	{{tag_array = db(db.location_tag.location_id == location_from_url[0]['id']).select()}}
+    {{for count, tag in enumerate(tag_array):}}
+        <a href="/tags/{{=tag['tag']}}/">{{=tag['tag']}}</a>
+        {{if count != len(tag_array) - 1:}},
+        {{pass}}
+    {{pass}}
+    </p>
+	<p class="lead">{{=location_from_url[0]['description']}}</p>
+    <p class="lead">open / closed (hours) / x available drivers</p>
+<h3><a id="details-expand">details<b class="caret" id="user-caret" style=""></b><i class="icon-list" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr>	
+    <div id="details-form" style="margin-left:15px;">    
+		<h4><a id="information-expand">information<b class="caret" id="user-caret" style=""></b><i class="icon-info-sign" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+        <div id="information-form"><br>       
+            <div style="margin-left:15px">
+                <p class="lead">{{=location_from_url[0]['description']}}</p>
+				<p class="lead">hours of operation</p>
+                <p class="lead">{{=location_from_url[0]['phone_number']}}</p>
+                <p class="lead">{{=location_from_url[0]['address']}}</p>
+				<p class="lead">{{=location_from_url[0]['city']}}, {{=location_from_url[0]['location_state']}} {{=location_from_url[0]['zipcode']}}</p>
+            </div> 
+            <hr>
+            <br>                             
+        </div>	 	                  
+		<h4><a id="ratings-expand">ratings<b class="caret" id="user-caret" style=""></b><i class="icon-star-empty" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+		<div id="ratings-form">
+
+        {{if can_vote != 'false':}}			
+			 <br>   
+             <a id="new-rating-expand" style="margin-left:15px;">+ new rating</a>
+             <div id="new-rating-form" style="margin-left:15px;"><hr>
+                <div style="margin-left:15px;">{{=form_rate_location}}</div><hr><br>
+            </div>        
+        {{pass}}   
+                <div style="margin-left:15px;max-width:100%;">
+                    
+                    {{for the_counter, location_rating in enumerate(sorted_location_rating_array_modified):}}
+                        <table>
+                        <tr>
+                    	{{count=0}}   
+                            <td><p class="lead">{{=location_rating['rating']}}</p></td>                 	
+                        {{while count < location_rating['rating']:}}
+                    	{{count = count + 1}}                    	
+                    	
+                            <td style="padding:0px;padding-top:5px;"><img src="/static/images/star.png"/></td>
+                            
+                    	{{pass}}
+                    	
+                            <td><a id="edit-rating-expand-{{=the_counter}}">
+
+                                {{if location_rating['rater_id'] == auth.user_id:}}
+                                <i class="icon-edit" style="margin-top:7px;margin-left:5px;"></i>
+                                {{pass}}
+                            </a></td>
+                            
+                    	</tr>
+                    	</table>
+                    <hr style="margin-top:-30px;margin-left:10px;">                	                 
+                    <p class="lead" style="margin-left:20px;width:100%">{{=location_rating['description']}}</p>
+                    
+                    {{if location_rating['rater_id'] == auth.user_id:}}    
+                    <div id = "edit-rating-form-{{=the_counter}}">
+                        <div style="margin-left:30px;"><hr>{{=form_rate_location_edit_array[the_counter]}}</div><hr><br>
+                    </div>
+                    {{pass}}    
+                        <div style="margin-left:30px;">
+                        
+                            <p class="lead" style="font-size:16px;margin-top:-15px;">
+                        
+                        	{{for votes in votes_from_location_array[the_counter]:}}
+                                {{likes = 0}}
+                                {{if votes['rating_vote'] == 'like':}}
+                                    {{likes = likes + 1}}
+                                {{pass}}
+                            {{pass}}
+                            
+                            {{if len(votes_from_location_array[the_counter]) > 0:}}
+                            	{{=likes}} out of {{=len(votes_from_location_array[the_counter])}} users liked this rating.
+                            {{pass}}
+                      
+                 	 	</p>
+                        
+                        
+                        <div style="margin-top:-15px;"> 
+                        
+                        {{if form_edit_rating_votes_array[the_counter] == 'null':}}
+                        
+                            {{if auth.user_id is None:}}
+                            {{else:}}
+                                {{if location_rating['rater_id'] == auth.user_id:}}
+                                {{else:}}
+                                    <a id="create-rating-vote-expand-{{=the_counter}}">vote</a>
+                                {{pass}}
+                            {{pass}}
+                            
+                        {{else:}}
+                        		<a id="edit-rating-vote-expand-{{=the_counter}}">edit vote <i class="icon-edit" style="margin-left:2px;margin-top:2px;"></i></a>	                           
+                        {{pass}}
+                        
+                       {{if form_edit_rating_report_array[the_counter] == 'null':}}
+
+                       		{{if auth.user_id is None:}}
+                            {{else:}}
+                                {{if location_rating['rater_id'] == auth.user_id:}}
+                                {{else:}}
+                                
+                                    <a id="report-rating-expand-{{=the_counter}}">report</a>
+                                
+                                {{pass}}
+                            {{pass}}
+                       		
+                       {{else:}}
+                       
+                       		<a id="edit-report-rating-expand-{{=the_counter}}">edit report <i class="icon-edit" style="margin-left:2px;margin-top:2px;"></i></a>
+                                              	
+                       {{pass}}
+                       
+                    </div>
+
+                    	</div>
+                        {{if form_edit_rating_votes_array[the_counter] == 'null':}}
+							<div id="create-rating-vote-form-{{=the_counter}}">		
+                                <div style="margin-left:30px;"><hr>{{=form_create_rating_votes_array[the_counter]}}</div><hr><br>
+                        	</div>
+                        {{else:}}
+                            <div id="edit-rating-vote-form-{{=the_counter}}">
+                                <div style="margin-left:30px;"><hr>{{=form_edit_rating_votes_array[the_counter]}}</div><hr><br>
+                            </div>  
+                        {{pass}}
+                        {{if form_edit_rating_report_array[the_counter] == 'null':}}
+                            <div id="report-rating-form-{{=the_counter}}">
+                                <div style="margin-left:30px;"><hr>{{=form_create_rating_report_array[the_counter]}}</div><hr><br>
+                            </div>
+                    	{{else:}}
+                            <div id="edit-report-rating-form-{{=the_counter}}">
+                                <div style="margin-left:30px;"><hr>{{=form_edit_rating_report_array[the_counter]}}</div><hr><br>
+                            </div>                  
+                    	{{pass}}
+                    
+                    <script>
+                            $("#edit-rating-form-{{=the_counter}}").show("slow");
+                            $("#edit-rating-form-{{=the_counter}}").hide();
+                            $("#edit-rating-expand-{{=the_counter}}").click(function () {
+                            $("#edit-rating-form-{{=the_counter}}").slideToggle();});                            
+                            
+                            $("#create-rating-vote-form-{{=the_counter}}").show("slow");
+                            $("#create-rating-vote-form-{{=the_counter}}").hide();
+                            $("#create-rating-vote-expand-{{=the_counter}}").click(function () {
+                            $("#create-rating-vote-form-{{=the_counter}}").slideToggle();});
+                            
+                            $("#edit-rating-vote-form-{{=the_counter}}").show("slow");
+                            $("#edit-rating-vote-form-{{=the_counter}}").hide();
+                            $("#edit-rating-vote-expand-{{=the_counter}}").click(function () {
+                            $("#edit-rating-vote-form-{{=the_counter}}").slideToggle();});
+                            
+                            $("#edit-report-rating-form-{{=the_counter}}").show("slow");
+                            $("#edit-report-rating-form-{{=the_counter}}").hide();
+                            $("#edit-report-rating-expand-{{=the_counter}}").click(function () {
+                            $("#edit-report-rating-form-{{=the_counter}}").slideToggle();});
+                            
+                            $("#report-rating-form-{{=the_counter}}").show("slow");
+                            $("#report-rating-form-{{=the_counter}}").hide();
+                            $("#report-rating-expand-{{=the_counter}}").click(function () {
+                            $("#report-rating-form-{{=the_counter}}").slideToggle();});                    
+                    </script>	
+                    
+
+                        
+                    {{pass}}
+                <br><hr><br>          
+                </div>                                                                                                                                        
+                                                                                     
+        	</div>
+                 
+                 
+			<h4><a id="stats-expand">stats<b class="caret" id="user-caret" style=""></b><i class="icon-signal" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+      
+      			<div id="stats-form"><br>
+        			
+        			<div style="margin-left:15px">
+        				stats
+                    </div>
+                    
+        			<hr><br>	
+        		</div>
+                 
+                 
+				<h4><a id="available-for-delivery-expand">available for delivery<b class="caret" id="user-caret" style=""></b><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+				
+				<div id="available-for-delivery-form"><br>
+                    <div style="margin-left:15px">
+                    	{{for member in available_member_array:}}
+                        	<a href="/member/{{=db(db.auth_user.id == member['id']).select()[0]['username']}}">{{=db(db.auth_user.id == member['id']).select()[0]['username']}}</a><br>
+    						{{=member['current_location']}}<br>
+    						{{=member['delivery_radius']}}<br>
+							{{=member['home']}}<br>
+							{{=member['max_radius_from_home']}}<br>
+							ratings<br>
+							average<br>
+							<br><br>
+						{{pass}}
+                    </div>
+        		<hr><br>
+        		</div>
+				
+				<h4><a id="admin-settings-expand">admin settings<b class="caret" id="user-caret" style=""></b><i class="icon-eye-open" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+				<div id="admin-settings-form"><br>
+				
+                    <div style="margin-left:15px">
+                        admin users
+                        official delivery users
+                    </div>
+                    
+                    <hr><br>
+        		</div>
+        	</div>        
+
+</div>        
+   
+<h3><a id="deals-coupons-expand">deals and coupons<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr><br>
+    
+    <div id="deals-coupons-form">
+      
+    <div style="margin-left:15px;">
+    
+    	deals and coupons
+    
+    </div>        
+          
+    <hr><br>    
+    </div>                                                                  
+                                                                                       
+<h2><a id="items-expand">items<b class="caret" id="user-caret" style=""></b><i class="icon-align-justify" style="margin-left:10px;margin-top:16px;"></i></a></h2><hr>
+			
+<div id="items-form" style="margin-left:15px;">
+<br>
+    <a id="new-category">+ new category</a>
+
+    <div id="new-category-form"><hr>
+                
+        {{=form_create_category}}
+                
+    </div>
+    <br>
+                
+    <a id="new-item">+ new item</a>
+                
+    <div id="new-item-form"><hr>
+                
+        {{=form_create_item}}
+                
+    </div>
+                
+            {{category_id=''}}
+                {{for counter, category in enumerate(sorted_category_array):}}
+                    {{if category['parent_category'] == '(None)':}}
+                        
+    <h3><a id="category-expand-{{=category['id']}}-{{=counter}}">{{=category['title']}}<b class="caret" id="user-caret" style=""></b><a id="edit-category-expand-{{=category['id']}}-{{=counter}}"><i class="icon-edit" style="margin-left:10px;margin-top:10px;"></i></a></a></h3><hr>
+                    
+            <div id="edit-category-form-{{=category['id']}}-{{=counter}}" style="margin-left:15px;">                                          
+                        {{=form_edit_category_array[counter]}}<hr><br>
+                        </div>      
+                    
+            <div id="category-form-{{=category['id']}}-{{=counter}}" style="margin-left:15px;">
+                        
+                        
+                <div id="category-form-collapse-{{=category['id']}}" style="">
+                    <p class="lead" style="margin-left:15px;">{{=category['description']}}</p>   
+                            
+                           
+                           {{for counter1,item in enumerate(sorted_item_array):}}  
+                            
+                                {{if item['parent_category'] == category['title']:}}
+                    <h4 margin-left:30px;><a id="expand1-{{=item['title']}}-{{=item['id']}}">{{=item['title']}}</a><a id="edit-expand-{{=item['title']}}-{{=item['id']}}"><b class="caret" id="user-caret" style=""></b><i class="icon-edit" style="margin-top:3px;margin-left:10px;"></i></a></h4><hr>
+                                     
+                                     
+                                            <div id="edit-form-{{=item['title']}}-{{=item['id']}}" style="margin-left:15px;">
+                                          
+                                                {{=form_edit_item_array[counter1]}}<hr><br>
+                                             
+                                             </div>
+                                     
+                                     <div style="margin-left:15px;" id="form1-{{=item['title']}}-{{=item['id']}}">
+                                             
+
+                                        <p class="lead">{{=item['description']}}</p>
+                                        
+                                         
+                                            <a id="new-item-option-expand-{{=counter}}-{{=counter1}}">+ new item option</a>
+                                                        
+                                            <div id="new-item-option-form-{{=counter}}-{{=counter1}}"><hr>
+                                                        
+                                                {{=form_create_item_option_array[counter1]}}
+                                                        
+                                            </div>    
+                                                                                                                      
+                                             
+                                            
+
+                                         
+                                        
+                                        <script>
+                                         
+                                    $("#edit-form-{{=item['title']}}-{{=item['id']}}").show("slow");
+                                    $("#edit-form-{{=item['title']}}-{{=item['id']}}").hide();
+                                    $("#edit-expand-{{=item['title']}}-{{=item['id']}}").click(function () {
+                                    $("#edit-form-{{=item['title']}}-{{=item['id']}}").slideToggle();
+                                        }); 
+                                        
+                                    $("#new-item-option-form-{{=counter}}-{{=counter1}}").show("slow");
+                                    $("#new-item-option-form-{{=counter}}-{{=counter1}}").hide();
+                                    $("#new-item-option-expand-{{=counter}}-{{=counter1}}").click(function () {
+                                    $("#new-item-option-form-{{=counter}}-{{=counter1}}").slideToggle();});                                                                                             
+                                                                                                             
+                                    $("#item-options-form-{{=counter}}-{{=counter1}}").show("slow");
+                                    $("#item-options-form-{{=counter}}-{{=counter1}}").hide();
+                                    $("#item-options-{{=counter}}-{{=counter1}}").click(function () {
+                                    $("#item-options-form-{{=counter}}-{{=counter1}}").slideToggle();}); 
+                                         
+                                                                                            
+                                    $("#form1-{{=item['title']}}-{{=item['id']}}").show("slow");
+                                    $("#form1-{{=item['title']}}-{{=item['id']}}").hide();
+                                    $("#expand1-{{=item['title']}}-{{=item['id']}}").click(function () {
+                                    $("#form1-{{=item['title']}}-{{=item['id']}}").slideToggle();}); 
+                            
+                                         
+                                         </script>
+                                        
+                                    </div>
+                                    
+                                {{pass}}
+                                                                        
+                            {{pass}} 
+                            
+                            <div style="margin-left:25px;" id="category-form-collapse-{{=category['id']}}">
+
+                            
+                             
+                            </div>  
+                        
+                    {{def category_crawl(category_id, margin):}}
+                                            
+                    {{title_from_id = db(db.location_category.id==category_id).select(db.location_category.title)[0]['title']}}
+                    {{category_children_array=[]}}
+                    {{old_category=''}}
+                    {{for counter1, second_category in enumerate(sorted_category_array):}}
+                        
+                        {{if second_category['parent_category'] == title_from_id:}}
+                            
+                            {{if second_category['parent_category'] == old_category:}}
+                                {{margin=margin}}
+                            {{else:}}
+                                {{margin=margin+15}}
+                            {{pass}}
+                            
+                            {{old_category = second_category['parent_category']}}
+                            {{category_children_array.append(second_category['parent_category'])}}
+                                            
+
+                    <div style="margin-left:{{=margin}}px;"><h4><a id="second-category-expand-{{=category['id']}}-{{=counter1}}">{{=second_category['title']}}<b class="caret" id="user-caret" style=""></b></a><a id="second-edit-category-expand-{{=category['id']}}-{{=counter1}}"><i class="icon-edit" style="margin-top:3px;margin-left:10px;"></i></a></h4><hr></div>
+
+                            <div id="second-edit-category-form-{{=category['id']}}-{{=counter1}}" style="margin-left:{{=margin+15}}px;"> 
+                            
+                                {{=form_edit_category_array[counter1]}}<hr><br>
+                        
+                            </div>  
+                            
+                            <div id="second-category-form-{{=category['id']}}-{{=counter1}}" style="margin-left:{{=margin}}px;"> 
+                            
+                            <p class="lead" style="margin-left:15px;">{{=second_category['description']}}</p> 
+                                                    
+                            {{for counter2, item in enumerate(sorted_item_array):}}  
+                                {{if item['parent_category'] == second_category['title']:}}
+                                    
+                                <div style="margin-left:{{=15}}px;"><h4><a id="expand-{{=counter1}}-{{=counter2}}">{{=item['title']}}</a><b class="caret" id="user-caret" style=""></b><a id="edit-item-expand-{{=counter1}}-{{=counter2}}"><i class="icon-edit" style="margin-top:3px;margin-left:10px;"></i></a></h4><hr></div>
+                                
+                            
+                                <div id="edit-item-form-{{=counter1}}-{{=counter2}}" style="margin-left:{{=30}}px;"> 
+                            
+                                    {{=form_edit_item_array[counter2]}}<hr><br>
+                        
+                                </div>  
+                                
+                                <div style="margin-left:{{=15}}px;" id="form-{{=counter1}}-{{=counter2}}">
+                                    <p class="lead" style="">{{=item['description']}}</p>
+                                                                                                                                                        
+                                            <a id="new-item-option-expand-{{=counter1}}-{{=counter2}}" style="margin-left:{{=15}}px;">+ new item option</a>                                                     
+                                            <div id="new-item-option-form-{{=counter1}}-{{=counter2}}" style="margin-left:{{=15}}px;"><hr>
+                                                        
+                                                <div style="margin-left:{{=30}}px;">
+                                                
+                                                    {{=form_create_item_option_array[counter2]}}</div>
+            
+                                                </div>  
+                                            
+                                            <br>  
+                                            <div style="margin-left:30px;">     
+                                            {{the_item_option_array = item_option_array[counter2]}}
+                                            {{for counter3, item_option in enumerate(the_item_option_array):}}
+                                                
+                                                <h4>{{=item_option['title']}}<a id="item-options-expand-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}"><i class="icon-edit" style="margin-top:3px;margin-left:10px;"></i></a></h4>
+                                                
+                                                {{=item_option['description']}}
+                                                {{=item_option['option_input_type']}}
+                                                {{=item_option['option_optional']}}
+                                                {{=item_option['option_requires_item']}}
+                                                {{=form_add_item_option_to_order_array[counter2][counter3]}}
+                                                
+                                                <div id="item-options-form-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}"><hr>
+                                                
+                                                    <div style="margin-left:15px;">
+                                                        {{=form_edit_item_options_array[counter2][counter3]}}<hr><br>
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                                <script>
+                                                
+                                                    $("#item-options-form-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}").show("slow");
+                                                    $("#item-options-form-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}").hide();
+                                                    $("#item-options-expand-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}").click(function () {
+                                                    $("#item-options-form-nested-{{=counter1}}-{{=counter2}}-{{=counter3}}").slideToggle();});                          
+                                    
+                                                
+                                                </script>
+                                            
+                                            {{pass}}
+                                                 
+                                            </div>                                        
+                                        <br>        
+                                        
+                                    </div>
+                            <script>
+                                                                                                                                                
+                            $("#edit-item-form-{{=counter1}}-{{=counter2}}").show("slow");
+                            $("#edit-item-form-{{=counter1}}-{{=counter2}}").hide();
+                            $("#edit-item-expand-{{=counter1}}-{{=counter2}}").click(function () {
+                            $("#edit-item-form-{{=counter1}}-{{=counter2}}").slideToggle();});                                                                                          
+                                                                                                                                                                                                        
+                            $("#new-item-option-form-{{=counter1}}-{{=counter2}}").show("slow");
+                            $("#new-item-option-form-{{=counter1}}-{{=counter2}}").hide();
+                            $("#new-item-option-expand-{{=counter1}}-{{=counter2}}").click(function () {
+                            $("#new-item-option-form-{{=counter1}}-{{=counter2}}").slideToggle();});                                                                                            
+                                                                                            
+                            $("#form-{{=counter1}}-{{=counter2}}").show("slow");
+                            $("#form-{{=counter1}}-{{=counter2}}").hide();
+                            $("#expand-{{=counter1}}-{{=counter2}}").click(function () {
+                            $("#form-{{=counter1}}-{{=counter2}}").slideToggle();}); 
+                            
+                            </script>
+                                    
+                                {{pass}}
+                                         
+                                
+                            {{pass}}                          
+                                                          
+                        <div id="second-category-form-{{=category['id']}}-{{=counter1}}" style="margin-left:25px;">
+                                                                        
+                        </div>
+                        
+                    
+                    <script>
+                                                                                                               
+                            $("#second-category-form-{{=category['id']}}-{{=counter1}}").show("slow");
+                            $("#second-category-expand-{{=category['id']}}-{{=counter1}}").click(function () {
+                            $("#second-category-form-{{=category['id']}}-{{=counter1}}").slideToggle();});
+                            
+                            $("#second-edit-category-form-{{=category['id']}}-{{=counter1}}").show("slow");
+                            $("#second-edit-category-form-{{=category['id']}}-{{=counter1}}").hide();
+                            $("#second-edit-category-expand-{{=category['id']}}-{{=counter1}}").click(function () {
+                            $("#second-edit-category-form-{{=category['id']}}-{{=counter1}}").slideToggle();});                 
+                                            
+                    </script>
+                  
+                    
+ 
+                    
+                  {{category_crawl(second_category['id'], margin)}}
+             
+                    </div> 
+
+                            
+                            {{pass}}
+                        {{pass}}
+                    {{pass}}    
+                        
+                    {{category_crawl(category['id'],-15)}}    
+                
+                    <script>
+                                      
+                            
+                            $("#category-form-{{=category['id']}}-{{=counter}}").show("slow");
+                            $("#category-expand-{{=category['id']}}-{{=counter}}").click(function () {
+                            $("#category-form-{{=category['id']}}-{{=counter}}").slideToggle();});
+                    
+                            $("#edit-category-form-{{=category['id']}}-{{=counter}}").show("slow");
+                            $("#edit-category-form-{{=category['id']}}-{{=counter}}").hide();
+                            $("#edit-category-expand-{{=category['id']}}-{{=counter}}").click(function () {
+                            $("#edit-category-form-{{=category['id']}}-{{=counter}}").slideToggle();});
+                                            
+                    </script>
+                 </div>
+              </div>
+
+                    {{pass}} 
+                {{pass}}
+                                                            
+        </div>  
+    </div>
+</div>
+
+
+<script>
+
+        $("#new-rating-form").show("slow");
+        $("#new-rating-form").hide();
+        $("#new-rating-expand").click(function () {
+        $("#new-rating-form").slideToggle();});
+        
+        $("#ratings-form").show("slow");
+        $("#ratings-form").hide();
+        $("#ratings-expand").click(function () {
+        $("#ratings-form").slideToggle();});
+                
+        $("#new-item-form").show("slow");
+        $("#new-item-form").hide();
+        $("#new-item").click(function () {
+        $("#new-category-form").hide();
+        $("#new-item-form").slideToggle();});       
+        
+        $("#new-category-form").show("slow");
+        $("#new-category-form").hide();
+        $("#new-category").click(function () {
+        $("#new-item-form").hide();
+        $("#new-category-form").slideToggle();});
+        
+        $("#available-for-delivery-form").show("slow");
+        $("#available-for-delivery-form").hide();
+        $("#available-for-delivery-expand").click(function () {
+        $("#available-for-delivery-form").slideToggle();});
+                
+        $("#admin-settings-form").show("slow");
+        $("#admin-settings-form").hide();
+        $("#admin-settings-expand").click(function () {
+        $("#admin-settings-form").slideToggle();});
+        
+        $("#details-form").show("slow");
+        $("#details-expand").click(function () {
+        $("#details-form").slideToggle();});
+        
+        $("#information-form").show("slow");
+        $("#information-form").hide();
+        $("#information-expand").click(function () {
+        $("#information-form").slideToggle();});
+        
+        $("#items-form").show("slow");
+        $("#items-expand").click(function () {
+        $("#items-form").slideToggle();});
+        
+        $("#stats-form").show("slow");
+        $("#stats-form").hide();
+        $("#stats-expand").click(function () {
+        $("#stats-form").slideToggle();});
+        
+        $("#deals-coupons-form").show("slow");
+        $("#deals-coupons-form").hide();
+        $("#deals-coupons-expand").click(function () {
+        $("#deals-coupons-form").slideToggle();});
+        
+</script>
