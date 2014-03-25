@@ -36,7 +36,10 @@
   <link rel="stylesheet" href="/deliveryfor/static/css/font-awesome.css">
   <link href="{{=URL(request.application,'static','css/jquery.thumbnailScroller.css')}}" type="text/css" rel="stylesheet" />
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="/deliveryfor/static/css/font-awesome.css">
+
   <!--/stylesheets -->
+
   <!-- inline-styles ================================================== -->
   <style type="text/css">
     html, body {
@@ -48,6 +51,7 @@
       min-height: 100%;
       height: auto !important;
       height: 100%;
+      //margin-bottom:-56px;
     }
     .footer{
       height:28px;
@@ -64,13 +68,13 @@
     }
     .footer-container{width:100%;border-top:3px solid rgb(51,102,153);}
     .modal.fade {
-      top: 20%;
+      top: 7%;
       -webkit-transition: opacity 0.3s linear;
       -moz-transition: opacity 0.3s linear;
       -o-transition: opacity 0.3s linear;
       transition: opacity 0.3s linear;
     }
-    .modal.fade.in {top: 20%;}
+    .modal.fade.in {top: 7%;}
     a.link_footer{color:rgb(198,206,204);}                   
     a.link_footer:hover{                       
       color:rgb(255,255,255);
@@ -107,10 +111,12 @@
       color:rgb(225,225,225);
     }
     #login-area:hover{color:rgb(255,255,255);}
+              
   </style>
   <!--/inline-styles -->
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
   <noscript><link href="{{=URL('static', 'css/web2py_bootstrap_nojs.css')}}" rel="stylesheet" type="text/css" /></noscript>
 
   {{block head}}
@@ -149,7 +155,7 @@
           </li>
           <li class="divider"></li>
           <li>
-            <a href="/account/logout/"><i class="icon-off"></i> Logout</a>
+            <a href="/logout/"><i class="icon-off"></i> Logout</a>
           </li>
         </ul>              
       </ul>
@@ -229,7 +235,7 @@
                     <a class="link_footer", href="/items/">items</a>,
                     <a class="link_footer", href="/locations/">locations</a>,
                     <a class="link_footer", href="/mission/">mission</a>,
-                    <a class="link_footer", href="/stats/">privacy</a>,
+                    <a class="link_footer", href="/privacy/">privacy</a>,
                     <a class="link_footer", href="/stats/">stats</a>,
                     <a class="link_footer", href="/terms/">terms</a>,
                     <a class="link_footer", href="/transparency/">transparency</a>,

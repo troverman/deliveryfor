@@ -69,15 +69,9 @@
 
 
 
-<div id="user_form" style="">
+<div id="member_form" style="">
 
-{{if request.args(0)=='login':}}
-
-	{{include 'login_area.html'}}
-{{elif request.args(0)=='register': }}
-	{{include 'login_area.html'}}
-
-{{elif request.args(0)=='request_reset_password': }}
+{{if request.args(0)=='reset_password': }}
     {{=BEAUTIFY(form1)}}
 
 {{elif request.args(0) is None:}}
@@ -88,8 +82,12 @@
     <div class="margin-profile">
         <table style="margin-left:15px;" id="orders-form">                  
                 <tr>
-                    <td style="width:340px"><h4><a href="mylocations">order location</a></h4></td>       
-                    <td style="width:200px"><p class="lead" style="font-size:12pt;">details, delivery member, costs, date, items</p></td>           
+                    <td style="width:15%"><h4><a href="mylocations">order location</a></h4></td>       
+                    <td style="width:15%"><p class="lead" style="font-size:12pt;">items</p></td>
+                    <td style="width:15%"><p class="lead" style="font-size:12pt;">delivery member</p></td>           
+                    <td style="width:15%"><p class="lead" style="font-size:12pt;">date</p></td>           
+                    <td style="width:15%"><p class="lead" style="font-size:12pt;">costs</p></td>           
+
                     <td><a id ="edit-count"><i class="icon-briefcase" title="Orders" style="margin-top:5px"></i></a></td>       
                 </tr>  
         </table>
@@ -174,10 +172,9 @@
 <div class="margin-profile">
 <table style="margin-left:15px;" id = "ratings-form">
         <tr>
-            <td style="width:340px"><h4><a href="mylocations">rating</a></h4></td>
+            <td style="width:340px"><h4><a href="mylocations">1 2 3 4 5</a></h4></td>
             <td style="width:200px"><p class="lead" style="font-size:12pt;">username</p></td>
             <td><a id ="edit-count"><i class="icon-edit" title="Orders" style="margin-top:5px"></i></a></td>
-            <td><a id ="edit-count"><i class="icon-remove" title="Orders" style="margin-top:5px"></i></a></td>
         </tr>
 </table>
 </div>
@@ -190,7 +187,7 @@
 
     <h1><a id="information-expand">{{=T( 'information' )}}<b class="caret" id="user-caret" style=""></b><i class="icon-user" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr><br>
 	<div class="margin-profile" id="information-form" style="margin-left:30px;"> 
-       {{=edit_user_information}}
+       {{=edit_member_information}}
     </div>
 
 	<h1><a id="settings-expand">{{=T( 'settings' )}}<b class="caret" id="user-caret" style=""></b><i class="icon-wrench" style="margin-left:20px;margin-top:22px;"></i></a></h1><hr><br>
@@ -215,7 +212,7 @@
 	   <h4><a id="general_settings">general</a></h4>
 		<div id="general_settings-form"style="display:none;"><hr>             
         <div style="margin-left:30px">  
-            {{=form_user_settings_general}}                                                   
+            {{=form_member_settings_general}}                                                   
         <hr>
         <br> 
         </div>   
@@ -235,7 +232,7 @@
             <div id="settings_notifications-form" style="display:none;">
             <hr>
             <div style="margin-left:30px;">
-                {{=form_user_settings_notifications}}           
+                {{=form_member_settings_notifications}}           
                 <hr>
             </div>
             <br>
@@ -249,17 +246,18 @@
 
 {{if not delivery_profile_id:}}
 
-    {{include 'create_delivery_profile.html'}}
-
+create profile
 {{else:}}
 
 <div class="margin-profile">
 <br>
 <a href="/member/{{=session.auth.user.username}}">view delivery profile</a>
 <br><br>
+<a class="btn">available for delivery</a>
+<br><br>
 <h3><a id="availibility-expand">availabilities<b class="caret" id="user-caret" style=""></b><i class="icon-time" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr>
 
-<div id="user_availibility-form">
+<div id="member_availibility-form">
 <table style="margin-left:15px;" id = "" class="modified_table">
 {{count10 = 0}}
 {{count20 = 0}}
@@ -314,7 +312,7 @@
                     <tr>
                         <td>
                             <div id="edit-form-availability-{{=count20}}" style="display:none;margin-left:15px" class="modified_table_remove_padding">
-                                {{=form_edit_user_availability_array[count30]}}
+                                {{=form_edit_member_availability_array[count30]}}
                             </div>
                         </td>
                     </tr>
@@ -341,13 +339,13 @@
 
     <a id="new-availibility" style="margin-left:25px;padding-bottom:10px">+new availability</a><br>
     <div id="new-availibility-form" style="display:none;margin-left:35px;"><hr><br>
-        {{=form_create_user_availability}}
+        {{=form_create_member_availability}}
     </div>
 </div>
 
 <h3><a id="fee-expand">fees<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr>
-<div id="user_fee-form">
-<table id = "user_fee-form" style="margin-left:25px;" class="modified_table">
+<div id="member_fee-form">
+<table id = "member_fee-form" style="margin-left:25px;" class="modified_table">
 {{count200 = 0}}
 {{count300 = -1}}
 
@@ -421,7 +419,7 @@
                     <td>
                         <div id="edit-form-fee-{{=count200}}" style="display:none;margin-left:15px;" class="modified_table_remove_padding">
 
-                            {{=form_edit_user_fee_array[count300]}}
+                            {{=form_edit_member_fee_array[count300]}}
 
                         </div>
                     </td>
@@ -446,7 +444,7 @@
 
 <a id="fee" style="margin-left:25px;margin-top:-30px;">+new fee</a><br>
     <div id="fee-form" style="display:none;margin-left:35px;"><hr><br>
-                {{=form_create_user_fee}}
+                {{=form_create_member_fee}}
     </div>
 
 <br>
@@ -454,19 +452,9 @@
 
 <h3><a id="details-expand">details<b class="caret" id="user-caret" style=""></b><i class="icon-list" style="margin-top:10px;margin-left:20px;"></i></a></h3><hr><br>
     <div id = "details-form" style="margin-left:15px;">
+        <p>about</p>
             {{=form_delivery_profile_update}}
-        <h4><a id="account_associations">account associations</a></h4>
-            <div id="account_associations-form" style="display:none">
-                <hr>
-                <div style="margin-left:30px">                 
-                        <h3>facebook</h3>
-                        <h3>google</h3>
-                        <h3>twitter</h3>
-                        <h3>paypal</h3>
-                    <hr>
-                    <br>
-                </div>
-            </div> <br> 
+    <br> 
     <div>
     <h4>pictures</h4><hr>
     <div style="margin-left:10px;margin-right:10px;">
@@ -476,7 +464,7 @@
             <tr>
                 <div style="">
                 {{import random}}
-                {{random_picture_array=sorted(user_picture_array, key=lambda *args: random.random())}}
+                {{random_picture_array=sorted(member_picture_array, key=lambda *args: random.random())}}
                 {{counts=0}}        
                 {{for picture in random_picture_array:}}
                         <td><a id = "editpicture-{{=counts}}"><img src="{{=URL('download',args=picture)}}" style="height:190px;" class="img-polaroid" /></a></td>
@@ -490,9 +478,9 @@
         <td><tr>
         <table>                     
                 {{counts=0}}
-                {{for picture in user_picture_array:}}                           
+                {{for picture in member_picture_array:}}                           
             <tr>
-                <td><div id="editpicture-form-{{=counts}}" style="display:none;margin-left:30px;"><h4 style="margin-top:15px;">edit</h4><hr>{{=form_edit_user_picture_array[counts]}}<hr><br></div></td>
+                <td><div id="editpicture-form-{{=counts}}" style="display:none;margin-left:30px;"><h4 style="margin-top:15px;">edit</h4><hr>{{=form_edit_member_picture_array[counts]}}<hr><br></div></td>
             </tr>
         </table>
       </td></tr>
@@ -502,7 +490,7 @@
         $("#editpicture-{{=counts}}").click(function () {
         
                 {{counter2 = 0}}
-                {{for picture in user_picture_array:}}  
+                {{for picture in member_picture_array:}}  
                 {{if counter2 != counts:}}
                   
                     $("#editpicture-form-{{=counter2}}").hide();
@@ -518,7 +506,7 @@
         {{pass}} 
         </table>
     </div>
-        {{=form_upload_user_images}} 
+        {{=form_upload_member_images}} 
     </div>
     
 </div>
@@ -532,9 +520,9 @@
         $("#new-availibility").click(function () {
         $("#new-availibility-form").slideToggle();});
 
-        $("#user_availibility-form").show("slow");
+        $("#member_availibility-form").show("slow");
         $("#availibility-expand").click(function () {
-        $("#user_availibility-form").slideToggle();});
+        $("#member_availibility-form").slideToggle();});
         
         $("#details-form").show("slow");
         $("#details-expand").click(function () {
@@ -545,15 +533,16 @@
         $("#fee").click(function () {
         $("#fee-form").slideToggle();});
 
-        $("#user_fee-form").show("slow");
+        $("#member_fee-form").show("slow");
         $("#fee-expand").click(function () {
-        $("#user_fee-form").slideToggle();});
+        $("#member_fee-form").slideToggle();});
 </script>
 
     </div>
     {{else:}}       
 {{pass}}
-
+<br>
+<br>
 </div>
 <script language="javascript">
 		

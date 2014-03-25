@@ -15,89 +15,76 @@ def about():
 def account():
 
     if session.auth is None:
-        redirect(URL('/'))        
+        redirect(URL(''))        
 
     else:
+        address_array = [r.address for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.address)]
+        description_array = [r.description for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.description)]
+        complete_address_array = [r.complete_address for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.complete_address)]
+        location_id_array = [r.id for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.id)]
+        start_availability_array = [r.start_availability for r in db(db.member_availability.user_id==session.auth.user.id).select(db.member_availability.start_availability)]
+        end_availability_array = [r.end_availability for r in db(db.member_availability.user_id==session.auth.user.id).select(db.member_availability.end_availability)]
+        availability_id_array = [r.id for r in db(db.member_availability.user_id==session.auth.user.id).select(db.member_availability.id)]
+        member_picture_array = [r.picture for r in db(db.member_images.user_id==session.auth.user.id).select(db.member_images.picture)] 
+        member_picture_id_array = [r.id for r in db(db.member_images.user_id==session.auth.user.id).select(db.member_images.id)]             
+        flat_rate_array = [r.flat_rate for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.flat_rate)]
+        percentage_array = [r.percentage for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.percentage)]
+        per_distance_array = [r.per_distance for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.per_distance)]
+        per_hour_array = [r.per_hour for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.per_hour)]
+        min_amount_array = [r.min_amount for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.min_amount)]
+        max_amount_array = [r.max_amount for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.max_amount)]
+        is_active_array = [r.is_active for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.is_active)]
+        member_currency = [r.member_currency for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.member_currency)]
+        member_units = [r.member_units for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.member_units)]
+        fee_id_array = [r.id for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.id)]
+        fee_title_array = [r.title for r in db(db.member_fees.user_id==session.auth.user.id).select(db.member_fees.title)]
 
-        address_array = [r.address for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.address)]
-        description_array = [r.description for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.description)]
-        complete_address_array = [r.complete_address for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.complete_address)]
-        location_id_array = [r.id for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.id)]
-
-        start_availability_array = [r.start_availability for r in db(db.user_availability.user_id==session.auth.user.id).select(db.user_availability.start_availability)]
-        end_availability_array = [r.end_availability for r in db(db.user_availability.user_id==session.auth.user.id).select(db.user_availability.end_availability)]
-              
-        availability_id_array = [r.id for r in db(db.user_availability.user_id==session.auth.user.id).select(db.user_availability.id)]
-        
-        user_picture_array = [r.picture for r in db(db.user_images.user_id==session.auth.user.id).select(db.user_images.picture)] 
-        user_picture_id_array = [r.id for r in db(db.user_images.user_id==session.auth.user.id).select(db.user_images.id)]    
-   
-                             
-        flat_rate_array = [r.flat_rate for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.flat_rate)]
-        percentage_array = [r.percentage for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.percentage)]
-        per_distance_array = [r.per_distance for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.per_distance)]
-        per_hour_array = [r.per_hour for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.per_hour)]
-        min_amount_array = [r.min_amount for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.min_amount)]
-        max_amount_array = [r.max_amount for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.max_amount)]
-        is_active_array = [r.is_active for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.is_active)]
-        user_currency = [r.user_currency for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.user_currency)]
-        user_units = [r.user_units for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.user_units)]
-        fee_id_array = [r.id for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.id)]
-        fee_title_array = [r.title for r in db(db.user_fees.user_id==session.auth.user.id).select(db.user_fees.title)]
-
-  
-        complete_fee_array=[fee_id_array, flat_rate_array, percentage_array, per_distance_array, per_hour_array, min_amount_array, max_amount_array, is_active_array, user_currency, user_units, fee_title_array]
+        complete_fee_array=[fee_id_array, flat_rate_array, percentage_array, per_distance_array, per_hour_array, min_amount_array, max_amount_array, is_active_array, member_currency, member_units, fee_title_array]
         delivery_profile_id = db(db.delivery_profile.user_id==session.auth.user.id).select()
         
-        #set map as a list of saved places at the complete address
-        lat_lng_array = []
         from gluon.tools import geocode
-        
-        thecounter = 0
-        for complete_address in complete_address_array:
-             
+        for thecounter, complete_address in enumerate(complete_address_array):
             (latitude, longitude) = geocode(complete_address)
             lat_lng_array.append((latitude, longitude, complete_address, description_array[thecounter], description_array[thecounter]))
-            thecounter = thecounter + 1
 
         #new location form
-        form_newlocation = SQLFORM(db.user_locations, col3 = {'special_instructions':A('[?]',
+        form_newlocation = SQLFORM(db.member_locations, col3 = {'special_instructions':A('[?]',
           _href='http://www.google.com/search?q=define:address')})
-        if form_newlocation.process(formname='user_locations').accepted:
+        if form_newlocation.process(formname='member_locations').accepted:
             session.flash = 'Location Added'
             redirect(URL('/account'))        
         elif form_newlocation.errors:
             response.flash = 'Error'
 
-        #new location edit / delete forms
+        #location edit / delete forms
         form_location_edit_array = []
         for counter, x in enumerate(location_id_array):
-            form_location_edit_array.append(SQLFORM(db.user_locations, x, deletable=True, submit_button = 'Save Location', showid = False))
+            form_location_edit_array.append(SQLFORM(db.member_locations, x, deletable=True, submit_button = 'Save Location', showid = False))
             if form_location_edit_array[counter].process(formname='form_location_edit_array-' + str(counter)).accepted:
                 response.flash = 'Location Updated'
                 redirect(URL('/account'))        
             elif form_location_edit_array[counter].errors:
                 response.flash = 'Error'
             
-        user_settings_id = db(db.user_settings.user_id==session.auth.user.id).select()             
-        if user_settings_id:
+        member_settings_id = db(db.member_settings.user_id==session.auth.user.id).select()             
+        if member_settings_id:
           hi=''
         else:
-            db.user_settings.insert(user_language="English", user_currency="$ USD", user_units="Imperial") 
+            db.member_settings.insert(member_language="English", member_currency="$ USD", member_units="Imperial") 
         
             
-        user_settings_record = db(db.user_settings.user_id==session.auth.user.id).select(db.user_settings.id)[0]['id']  
-        form_user_settings_general = SQLFORM(db.user_settings, user_settings_record, fields = ['user_language', 'user_currency', 'user_units'], separator = ' ', submit_button = 'Save profile', showid = False, labels = {'user_language':P('Language' ,_class='head'), 'user_currency':P('Currency', _class='head'), 'user_units':P('Units', _class='head')})           
-        if form_user_settings_general.process(formname='form_user_settings_general').accepted:
+        member_settings_record = db(db.member_settings.user_id==session.auth.user.id).select(db.member_settings.id)[0]['id']  
+        form_member_settings_general = SQLFORM(db.member_settings, member_settings_record, fields = ['member_language', 'member_currency', 'member_units'], separator = ' ', submit_button = 'Save profile', showid = False, labels = {'member_language':P('Language' ,_class='head'), 'member_currency':P('Currency', _class='head'), 'member_units':P('Units', _class='head')})           
+        if form_member_settings_general.process(formname='form_member_settings_general').accepted:
             session.flash = 'Settings Updated'
             redirect(URL('/account'))        
-        elif form_user_settings_general.errors:
+        elif form_member_settings_general.errors:
             response.flash = 'Error'
-        form_user_settings_notifications = SQLFORM(db.user_settings, user_settings_record, formstyle = 'divs', fields = ['user_accepts_email', 'user_phone_number'], submit_button = 'Save profile', showid = False, separator = ' ', labels = {'user_accepts_email':'', 'user_phone_number':P('Send text updates to this number', _class='head')}, col3 = {'user_accepts_email':P('Recieve news and update emails from deliveryfor', _class='head', _style="margin-left:5px;margin-top:20px;")})
-        if form_user_settings_notifications.process(formname='form_user_settings_notifications').accepted:
+        form_member_settings_notifications = SQLFORM(db.member_settings, member_settings_record, formstyle = 'divs', fields = ['member_accepts_email', 'member_phone_number'], submit_button = 'Save profile', showid = False, separator = ' ', labels = {'member_accepts_email':'', 'member_phone_number':P('Send text updates to this number', _class='head')}, col3 = {'member_accepts_email':P('Recieve news and update emails from deliveryfor', _class='head', _style="margin-left:5px;margin-top:20px;")})
+        if form_member_settings_notifications.process(formname='form_member_settings_notifications').accepted:
             session.flash = 'Settings Updated'
             redirect(URL('/account'))        
-        elif form_user_settings_notifications.errors:
+        elif form_member_settings_notifications.errors:
             response.flash = 'Error'
 
         form_create_delivery_profile = SQLFORM(db.delivery_profile)
@@ -120,73 +107,69 @@ def account():
         else:
             form_delivery_profile_update=''
                 
-        form_upload_user_images = SQLFORM(db.user_images)
-        if form_upload_user_images.process(formname='form_user_images').accepted:
+        form_upload_member_images = SQLFORM(db.member_images)
+        if form_upload_member_images.process(formname='form_member_images').accepted:
             session.flash = 'Image Uploaded'
             redirect(URL('/account'))        
-        elif form_upload_user_images.errors:
+        elif form_upload_member_images.errors:
             response.flash = 'Error'
 
-        form_edit_user_picture_array = []
-        counter = 0
-        for x in user_picture_id_array:
-            form_edit_user_picture_array.append(SQLFORM(db.user_images, x, deletable=True, submit_button = 'Save Picture', showid = False))
-            if form_edit_user_picture_array[counter].process(formname='form_edit_user_picture_array-' + str(counter)).accepted:
+        form_edit_member_picture_array = []
+        for counter, x in enumerate(member_picture_id_array):
+            form_edit_member_picture_array.append(SQLFORM(db.member_images, x, deletable=True, submit_button = 'Save Picture', showid = False))
+            if form_edit_member_picture_array[counter].process(formname='form_edit_member_picture_array-' + str(counter)).accepted:
                 session.flash = 'Image Updated'
                 redirect(URL('/account'))        
-            elif form_edit_user_picture_array[counter].errors:
+            elif form_edit_member_picture_array[counter].errors:
                 response.flash = 'Error'
-            counter = counter + 1
                                                                                                                                       
-        form_create_user_availability = SQLFORM(db.user_availability)
-        if form_create_user_availability.process(formname='form_create_user_availability', onvalidation=__onvalidation_availability).accepted:
+        form_create_member_availability = SQLFORM(db.member_availability)
+        if form_create_member_availability.process(formname='form_create_member_availability', onvalidation=__onvalidation_availability).accepted:
             session.flash = 'Availability Added'
             redirect(URL('/account'))        
-        elif form_create_user_availability.errors:
+        elif form_create_member_availability.errors:
             response.flash = 'Error'
                                                            
-        form_edit_user_availability_array = []
+        form_edit_member_availability_array = []
         for counter, x in enumerate(availability_id_array):
 
-            form_edit_user_availability_array.append(SQLFORM(db.user_availability, x, deletable=True, submit_button = 'Save Availability', showid = False))
-            if form_edit_user_availability_array[counter].process(formname='form_edit_user_availability_array-' + str(counter), onvalidation=__onvalidation_availability).accepted:
+            form_edit_member_availability_array.append(SQLFORM(db.member_availability, x, deletable=True, submit_button = 'Save Availability', showid = False))
+            if form_edit_member_availability_array[counter].process(formname='form_edit_member_availability_array-' + str(counter), onvalidation=__onvalidation_availability).accepted:
                 session.flash = 'Availability Updated'
                 redirect(URL('/account'))        
-            elif form_edit_user_availability_array[counter].errors:
+            elif form_edit_member_availability_array[counter].errors:
                 response.flash = 'Error'
                
-        form_create_user_fee = SQLFORM(db.user_fees)
-        if form_create_user_fee.process(formname='form_create_user_fee').accepted:
+        form_create_member_fee = SQLFORM(db.member_fees)
+        if form_create_member_fee.process(formname='form_create_member_fee').accepted:
             session.flash = 'Fee Added'
             redirect(URL('/account'))        
-        elif form_create_user_fee.errors:
+        elif form_create_member_fee.errors:
             response.flash = 'Error'    
             
-        form_edit_user_fee_array = []
-        counter = 0
-        for x in fee_id_array:
-            form_edit_user_fee_array.append(SQLFORM(db.user_fees, x, deletable=True, submit_button = 'Save Fee', showid = False))
-            if form_edit_user_fee_array[counter].process(formname='form_edit_user_fee_array-' + str(counter)).accepted:
+        form_edit_member_fee_array = []
+        for counter, x in enumerate(fee_id_array):
+            form_edit_member_fee_array.append(SQLFORM(db.member_fees, x, deletable=True, submit_button = 'Save Fee', showid = False))
+            if form_edit_member_fee_array[counter].process(formname='form_edit_member_fee_array-' + str(counter)).accepted:
                 session.flash = 'Fee Updated'
                 redirect(URL('/account'))        
-            elif form_edit_user_fee_array[counter].errors:
+            elif form_edit_member_fee_array[counter].errors:
                 response.flash = 'Error'
-            counter = counter + 1  
     
     
-    edit_user_information=SQLFORM(db.auth_user, auth.user_id, fields = ['first_name','last_name','email', 'username'], submit_button = 'save profile', showid = False)
+    edit_member_information=SQLFORM(db.auth_user, auth.user_id, fields = ['first_name','last_name','email', 'username'], submit_button = 'save profile', showid = False)
 
     
     return dict(
-    form_user_settings_notifications=form_user_settings_notifications,
-    form_user_settings_general=form_user_settings_general,
-    edit_user_information=edit_user_information,
+    form_member_settings_notifications=form_member_settings_notifications,
+    form_member_settings_general=form_member_settings_general,
+    edit_member_information=edit_member_information,
         
-    form_edit_user_picture_array=form_edit_user_picture_array,
-    user_picture_array=user_picture_array,
+    form_edit_member_picture_array=form_edit_member_picture_array,
+    member_picture_array=member_picture_array,
     
     delivery_profile_id=delivery_profile_id,
-    form_edit_user_fee_array=form_edit_user_fee_array,
+    form_edit_member_fee_array=form_edit_member_fee_array,
     fee_id_array=fee_id_array,
     complete_fee_array=complete_fee_array,
     
@@ -194,10 +177,10 @@ def account():
     end_availability_array=end_availability_array,
     availability_id_array=availability_id_array,
 
-    form_edit_user_availability_array=form_edit_user_availability_array,
-    form_create_user_fee=form_create_user_fee,
-    form_create_user_availability=form_create_user_availability,
-    form_upload_user_images = form_upload_user_images,
+    form_edit_member_availability_array=form_edit_member_availability_array,
+    form_create_member_fee=form_create_member_fee,
+    form_create_member_availability=form_create_member_availability,
+    form_upload_member_images = form_upload_member_images,
     form_location_edit_array=form_location_edit_array,
     form_delivery_profile_update=form_delivery_profile_update,
     form_create_delivery_profile=form_create_delivery_profile,
@@ -245,48 +228,66 @@ def faq():
 ################################
 def index():
     from gluon.tools import geocode
+    import random
     #make function to go to nice long / lat
     latitude = longtitude = ''
     if session.auth is None:
         complete_address_array = ''
-        lat_lng_array = []
+        delivery_member_array = []
         current_location_array = [r.current_location for r in db(db.delivery_profile).select(db.delivery_profile.current_location)]
         for location in current_location_array:
             delivery_profile_info = db(db.delivery_profile.current_location==location).select(db.delivery_profile.ALL).as_list()
             user_id_at_location = db(db.delivery_profile.current_location==location).select(db.delivery_profile.user_id).as_list()[0]['user_id']
-            delivery_profile_pictures_array = [r.picture for r in db(db.user_images.user_id==user_id_at_location).select(db.user_images.picture)] 
+            delivery_profile_pictures_array = [r.picture for r in db(db.member_images.user_id==user_id_at_location).select(db.member_images.picture)] 
             delivery_profile_username = db(db.auth_user.id==user_id_at_location).select(db.auth_user.username).as_list()[0]['username']
             (latitude, longitude) = geocode(location)
-            lat_lng_array.append((latitude, longitude, location, delivery_profile_pictures_array, delivery_profile_username))
+            delivery_member_array.append((latitude, longitude, location, delivery_profile_pictures_array, delivery_profile_username))
     else:
-        complete_address_array = [r.complete_address for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.complete_address)]
-        description_array = [r.description for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.description)]
-        lat_lng_array = []    
+        complete_address_array = [r.complete_address for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.complete_address)]
+        description_array = [r.description for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.description)]
+        delivery_member_array = []    
         current_location_array = [r.current_location for r in db(db.delivery_profile).select(db.delivery_profile.current_location)]
         for location in current_location_array:
             delivery_profile_info = db(db.delivery_profile.current_location==location).select(db.delivery_profile.ALL).as_list()
             user_id_at_location = db(db.delivery_profile.current_location==location).select(db.delivery_profile.user_id).as_list()[0]['user_id']
-            delivery_profile_pictures_array = [r.picture for r in db(db.user_images.user_id==user_id_at_location).select(db.user_images.picture)] 
+            delivery_profile_pictures_array = [r.picture for r in db(db.member_images.user_id==user_id_at_location).select(db.member_images.picture)] 
             delivery_profile_username = db(db.auth_user.id==user_id_at_location).select(db.auth_user.username).as_list()[0]['username']
             (latitude, longitude) = geocode(location)
-            lat_lng_array.append((latitude, longitude, location, delivery_profile_pictures_array, delivery_profile_username))
-    search_form=SQLFORM(db.user_search)
+            delivery_member_array.append((latitude, longitude, location, delivery_profile_pictures_array, delivery_profile_username))
+    search_form=SQLFORM(db.member_search)
     if search_form.process(session=None, formname='test').accepted:
-        session.search_form_user_location = search_form.vars.user_location
+        session.search_form_member_locations = search_form.vars.member_locations
         session.search_form_radius = search_form.vars.radius
         session.search_form_details = search_form.vars.details
-        redirect(URL('search/' + search_form.vars.user_location + '/' + search_form.vars.radius + 'mi/' + search_form.vars.details))  
+        redirect(URL('search/' + search_form.vars.member_locations + '/' + search_form.vars.radius + 'mi/' + search_form.vars.details))  
     elif search_form.errors:
         response.flash = 'There\'s a problem!'
-    response.flash = 'welcome to deliveryfor!'
-    user_picture_array = [r.picture for r in db(db.user_images).select(db.user_images.picture)] 
-    location_list = db(db.locations).select()
+    session.flash = 'welcome to deliveryfor!'
+    member_picture_array = [r.picture for r in db(db.member_images).select(db.member_images.picture)] 
 
+    location_list = db(db.locations).select()
+    location_array = []
+    location_image_array=[]
+    for location in location_list:
+        location_image=db(db.location_images.location_id == location['id']).select()
+        location_tag=db(db.location_tag.location_id == location['id']).select()
+        if location_image:
+            location_array.append([location,location_image,location_tag])
+
+    index_block_list = db(db.html_block.html_type == 'index').select().as_list()
+    random.shuffle(index_block_list)
+    index_header_block_list = db(db.html_block.html_type == 'index-header').select().as_list()
+    random.shuffle(index_header_block_list)
+    index_header_block_list = index_header_block_list[0]['html_content']
+    
     return dict(
+        index_header_block_list=index_header_block_list,
+        delivery_member_array=delivery_member_array,
         search_form=search_form,
         at_lng_array = lat_lng_array,
-        user_picture_array=user_picture_array,
-        location_list=location_list,
+        member_picture_array=member_picture_array,
+        location_array=location_array,
+        index_block_list=index_block_list,
     )
 
     
@@ -309,25 +310,10 @@ def items():
 ################################
 def location():
     
-    if session.auth is None:
-        can_vote='false'
-        can_vote_rating='false'
-    else:
-        user_rating_history = db(db.ratings.rater_id==auth.user_id).select().as_list()           
-        can_vote_rating='true'
-        if user_rating_history == []:
-            can_vote='true'
-        else:     
-            can_vote='false'
-
     location_from_url = db(db.locations.url_title==request.args(0)).select()
     id_from_url = db(db.locations.url_title==request.args(0)).select(db.locations.id)[0]['id']
-    category_array = db(db.location_category.location_id==id_from_url).select()
     item_array = db(db.location_item.location_id==id_from_url).select()
-    category_array_modified = []
-    sorted_category_array = sorted(category_array.as_list(), key=lambda category: category['sort_id'])
     item_array = db(db.location_item.location_id==id_from_url).select()
-    sorted_item_array = sorted(item_array.as_list(), key=lambda item: item['sort_id'])
     
     form_rate_location = SQLFORM(db.ratings)
 
@@ -338,186 +324,7 @@ def location():
         response.flash = 'Error'
                                                                   
     location_rating_array=db((db.ratings.ratee_id==id_from_url) & (db.ratings.ratee_type=='location')).select() 
-    location_rating_array_modified=[]
-    
-    for location_rating in location_rating_array:
-        if location_rating['ratee_type']=='location':
-            location_rating_array_modified.append(location_rating)                            
-
-          
-    votes_from_location_array1=[]
-    likes_array=[]
-    total_array=[]
-    sort_alg_array=[]  
-    sorted_location_rating_array_modified=[]
-    for counter, location_rating_modified_sort in enumerate(location_rating_array_modified):                            
-        votes_from_location_array1.append(db(db.rating_votes.rating_id==location_rating_modified_sort['id']).select(db.rating_votes.rating_vote).as_list())
-        likes=0 
-        for votes in votes_from_location_array1[counter]:
-            if votes['rating_vote'] == 'like':
-                likes = likes + 1   
-                                                 
-        likes_array.append(likes*likes)                                         
-        total_array.append(len(votes_from_location_array1[counter])*5)                                         
-        sort_alg_array.append(-total_array[counter] - likes_array[counter])
-        
-        db(db.ratings.id==location_rating_modified_sort['id']).update(sort_alg=sort_alg_array[counter])    
-
-    sorted_location_rating_array_modified = sorted(location_rating_array_modified, key=lambda sort_alg: sort_alg['sort_alg'])
-                                                                                     
-    form_rate_location_edit_array=[]                                                                                           
-    form_create_rating_votes_array=[]
-    form_edit_rating_votes_array=[]                         
-    form_create_rating_report_array=[]
-    form_edit_rating_report_array=[]   
-    vote_id_from_user = db(db.rating_votes.user_id==auth.user_id).select(db.rating_votes.id).as_list()
-    report_id_from_user = db(db.rating_report.user_id==auth.user_id).select(db.rating_report.id).as_list()
-    votes_from_location_array=[]
-
-    for the_counter, location_rating_modified in enumerate(sorted_location_rating_array_modified):
-        form_rate_location_edit_array.append(SQLFORM(db.ratings, location_rating_modified['id'], onvalidation=__onvalidation_rating_update, showid = False, deletable=True))
-        form_create_rating_votes_array.append(SQLFORM(db.rating_votes))
-        form_create_rating_report_array.append(SQLFORM(db.rating_report))
-        votes_from_location_array.append(db(db.rating_votes.rating_id==location_rating_modified['id']).select(db.rating_votes.rating_vote).as_list())
-        
-        if vote_id_from_user == []:
-            form_edit_rating_votes_array.append('null')
-
-        else:
-            try:
-                form_edit_rating_votes_array.append(SQLFORM(db.rating_votes, vote_id_from_user[the_counter]['id'], formstyle = 'divs', showid = False, deletable=True, labels = {'rating_vote':''}))
-                if form_edit_rating_votes_array[the_counter].process(formname='form_edit_rating_votes-' + str(the_counter)).accepted:
-                    session.flash = 'Vote Updated'
-                    redirect(URL('location/' + request.args(0))) 
-                elif form_edit_rating_votes_array[the_counter].errors:
-                    response.flash ='Error'
-            except IndexError:
-                form_edit_rating_votes_array.append('null') 
-                          
-                                           
-        if form_create_rating_votes_array[the_counter].process(formname='form_create_rating_votes-' + str(the_counter), onvalidation=__onvalidation_rating_vote, formstyle = 'divs', showid = False, labels = {'rating_vote':''}).accepted:
-            db(db.rating_votes.id==form_create_rating_votes_array[the_counter].vars.id).update(rating_id=location_rating_modified['id'])    
-            session.flash = 'Voted'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_create_rating_votes_array[the_counter].errors:
-            response.flash = 'Error'
-            
-            
-        if report_id_from_user == []:
-            form_edit_rating_report_array.append('null')
-
-        else:
-            try:
-                form_edit_rating_report_array.append(SQLFORM(db.rating_report, report_id_from_user[the_counter]['id'], formstyle = 'divs', showid = False, deletable=True))
-                if form_edit_rating_report_array[the_counter].process(formname='form_edit_rating_report-' + str(the_counter)).accepted:
-                    session.flash = 'Report Updated'
-                    redirect(URL('location/' + request.args(0))) 
-                elif form_edit_rating_report_array[the_counter].errors:
-                    response.flash ='Error'
-            except IndexError:
-                form_edit_rating_report_array.append('null')              
-
-                        
-        if form_create_rating_report_array[the_counter].process(formname='form_create_rating_report-' + str(the_counter)).accepted:
-            db(db.rating_report.id==form_create_rating_report_array[the_counter].vars.id).update(rating_id=location_rating_modified['id'])    
-            session.flash = 'Reported'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_create_rating_report_array[the_counter].errors:
-            response.flash = 'Error'                                                
-                        
-        if form_rate_location_edit_array[the_counter].process(formname='form_rate_location_edit_array-' + str(the_counter)).accepted:
-            session.flash = 'Rating Updated'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_rate_location_edit_array[the_counter].errors:
-            response.flash = 'Error' 
-                                                                                                                            
-                              
-    form_create_category = SQLFORM(db.location_category)
-    location_category_array = db(db.locations.url_title==request.args(0)).select(db.location_category.title)
-    location_category_array_modified = []
- 
-    if form_create_category.process(formname='form_create_category', onvalidation=__onvalidation_location_sort_id).accepted:
-        session.flash = 'Category Created'
-        redirect(URL('location/' + request.args(0))) 
-    elif form_create_category.errors:
-        response.flash = 'Error'
-                                  
-    form_edit_category_array = []                          
-    for counter, category in enumerate(sorted_category_array):  
-        form_edit_category_array.append(SQLFORM(db.location_category, category['id'], deletable=True))
-
-        if form_edit_category_array[counter].process(formname='form_edit_category-' + str(counter), onvalidation=__onvalidation_location_sort_id).accepted:
-            session.flash = 'Category Updated'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_edit_category_array[counter].errors:
-            response.flash = 'Error'   
-
-                              
-    form_create_item = SQLFORM(db.location_item)
-
-    if form_create_item.process(formname='form_create_item').accepted:
-        session.flash = 'Item Created'        
-        redirect(URL('location/' + request.args(0))) 
-    elif form_create_item.errors:
-        response.flash = 'Error'
-                                  
-                                  
-    form_edit_item_array = []                          
-    for counter, item in enumerate(sorted_item_array):  
-        form_edit_item_array.append(SQLFORM(db.location_item, item['id'], deletable=True))
-
-        if form_edit_item_array[counter].process(formname='form_edit_item_array-' + str(counter), onvalidation=__onvalidation_location_sort_id).accepted:
-            session.flash = 'Item Updated'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_edit_item_array[counter].errors:
-            response.flash = 'Error'
-      
-                
-    form_create_item_option_array = []                                                      
-    form_edit_item_options_array = []
-    form_add_item_option_to_order_array = []
-    item_option_array = []
-    
-    for counter, item in enumerate(sorted_item_array): 
-        form_add_item_option_to_order_array.append([])           
-        form_edit_item_options_array.append([])        
-        form_create_item_option_array.append(SQLFORM(db.location_item_options))   
-        item_option_array.append(db((db.location_item_options.location_id==id_from_url) & (db.location_item_options.item_id==item['id'])).select().as_list())
-
-        if form_create_item_option_array[counter].process(formname='form_create_item_option-' + str(counter)).accepted:
-            db(db.location_item_options.id==form_create_item_option_array[counter].vars.id).update(item_id=item['id'])    
-            session.flash = 'Item Option Created'
-            redirect(URL('location/' + request.args(0))) 
-        elif form_create_item_option_array[counter].errors:
-            response.flash = 'Error'    
-        
-################################################sort by sort_id ##########################
-        
-        
-        sorted_item_option_array = item_option_array
-        for the_counter, item_option in enumerate(sorted_item_option_array[counter]):
-                             
-            try:
-                form_edit_item_options_array[counter].append(SQLFORM(db.location_item_options, item_option['id']))   
-                if form_edit_item_options_array[counter][the_counter].process(formname='form_edit_item_options-' + str(counter) + str(the_counter)).accepted:
-                    session.flash = 'Item Option Updated'
-                    redirect(URL('location/' + request.args(0))) 
-                elif form_edit_item_options_array[counter][the_counter].errors:
-                    response.flash = 'Error' 
-            except IndexError:
-                form_edit_item_options_array.append('null')
-                
-            try:
-                form_add_item_option_to_order_array[counter].append(SQLFORM(db.user_order_items))   
-                 
-                if form_add_item_option_to_order_array[counter][the_counter].process(formname='form_add_item_option_to_order_array-' + str(counter) + str(the_counter)).accepted:
-                    session.flash = 'Item Added to Order'
-                    redirect(URL('location/' + request.args(0))) 
-                elif form_add_item_option_to_order_array[counter][the_counter].errors:
-                    response.flash = 'Error' 
-            except IndexError:
-                form_add_item_option_to_order_array.append('null')
-                
+                                                                                        
     from gluon.tools import geocode
     lat_lng_array = []
     (latitude, longitude) = geocode(location_from_url[0]['complete_address'])
@@ -525,12 +332,10 @@ def location():
     
     import math
     (lat1, long1) = geocode(location_from_url[0]['complete_address'])
-    
     location_from_user = db(db.delivery_profile).select()
     distance_meter_array = []
     for location in location_from_user:
         (lat2, long2) = geocode(location['current_location'])
-    
         degrees_to_radians = math.pi/180.0
         phi1 = (90.0 - lat1)*degrees_to_radians
         phi2 = (90.0 - lat2)*degrees_to_radians   
@@ -538,7 +343,6 @@ def location():
         theta2 = long2*degrees_to_radians
         cos = (math.sin(phi1)*math.sin(phi2)*math.cos(theta1 - theta2) + math.cos(phi1)*math.cos(phi2))
         distance_meter_array.append([float(location['delivery_radius']) - math.acos( cos ) * 6378100, float(location['max_radius_from_home']) - math.acos( cos ) * 6378100, location])
-
     available_member_array = []
     for element in distance_meter_array:
         if element[0] > 0: 
@@ -551,31 +355,8 @@ def location():
     available_member_array=available_member_array,
     distance_meter_array=distance_meter_array,
     location_from_url=location_from_url,
-    form_add_item_option_to_order_array=form_add_item_option_to_order_array,
-    sorted_location_rating_array_modified=sorted_location_rating_array_modified,
-    can_vote=can_vote,
-    votes_from_location_array=votes_from_location_array,
-    form_create_rating_report_array=form_create_rating_report_array,
-    form_edit_rating_report_array=form_edit_rating_report_array,
-    form_rate_location_edit_array=form_rate_location_edit_array,
-    vote_id_from_user=vote_id_from_user,
-    form_edit_rating_votes_array=form_edit_rating_votes_array,
-    form_create_rating_votes_array=form_create_rating_votes_array,
-    item_option_array=item_option_array,
-    location_rating_array_modified=location_rating_array_modified,
-    form_edit_item_options_array=form_edit_item_options_array,
     id_from_url=id_from_url,
-    sorted_item_array=sorted_item_array,
-    form_edit_category_array=form_edit_category_array,
-    sorted_category_array=sorted_category_array,
-    category_array_modified=category_array_modified,
-    form_create_category=form_create_category,
-    form_create_item=form_create_item,
-    form_rate_location=form_rate_location,
-    form_create_item_option_array=form_create_item_option_array,
-    form_edit_item_array=form_edit_item_array,
     lat_lng_array=lat_lng_array,
-    
     )
 
 
@@ -596,7 +377,14 @@ def locations():
         location_list=location_list,
         location_picture_array=location_picture_array,
         )
-    
+  
+################################
+####logout######################
+################################
+def logout():
+    auth.logout
+    return dict()     
+
 ################################
 ####mission#####################
 ################################
@@ -608,42 +396,39 @@ def mission():
 ################################
 def member():
     if session.auth is None:
-    
         delivery_profile_id=''
-    
     else:
         delivery_profile_id = db(db.delivery_profile.user_id==session.auth.user.id).select()
 
-    id_from_username = db(db.auth_user.username==request.args(0)).select(db.auth_user.id).__str__()[13:] 
-    current_location = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.current_location).__str__()[34:]
-    
+    id_from_username = db(db.auth_user.username==request.args(0)).select(db.auth_user.id)[0]['id']
+    current_location = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.current_location)[0]['current_location']
     profile_firstname = db(db.auth_user.id==id_from_username).select(db.auth_user.first_name).as_list()[0]['first_name']
     profile_lastname = db(db.auth_user.id==id_from_username).select(db.auth_user.last_name)[0]['last_name']
     
-    start_availability_array = [r.start_availability for r in db(db.user_availability.user_id==id_from_username).select(db.user_availability.start_availability)]
-    end_availability_array = [r.end_availability for r in db(db.user_availability.user_id==id_from_username).select(db.user_availability.end_availability)]
-    availability_id_array = [r.id for r in db(db.user_availability.user_id==id_from_username).select(db.user_availability.id)]
-        
-    user_picture_array = [r.picture for r in db(db.user_images.user_id==id_from_username).select(db.user_images.picture)]    
+    start_availability_array = [r.start_availability for r in db(db.member_availability.user_id==id_from_username).select(db.member_availability.start_availability)]
+    end_availability_array = [r.end_availability for r in db(db.member_availability.user_id==id_from_username).select(db.member_availability.end_availability)]
+    availability_id_array = [r.id for r in db(db.member_availability.user_id==id_from_username).select(db.member_availability.id)]
+
+    member_picture_array = [r.picture for r in db(db.member_images.user_id==id_from_username).select(db.member_images.picture)]    
     
-    flat_rate_array = [r.flat_rate for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.flat_rate)]
-    percentage_array = [r.percentage for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.percentage)]
-    per_distance_array = [r.per_distance for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.per_distance)]
-    per_hour_array = [r.per_hour for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.per_hour)]
-    min_amount_array = [r.min_amount for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.min_amount)]
-    max_amount_array = [r.max_amount for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.max_amount)]
-    is_active_array = [r.is_active for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.is_active)]
-    user_currency = [r.user_currency for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.user_currency)]
-    user_units = [r.user_units for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.user_units)]
-    fee_id_array = [r.id for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.id)]
-    fee_title_array = [r.title for r in db(db.user_fees.user_id==id_from_username).select(db.user_fees.title)]
+    flat_rate_array = [r.flat_rate for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.flat_rate)]
+    percentage_array = [r.percentage for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.percentage)]
+    per_distance_array = [r.per_distance for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.per_distance)]
+    per_hour_array = [r.per_hour for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.per_hour)]
+    min_amount_array = [r.min_amount for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.min_amount)]
+    max_amount_array = [r.max_amount for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.max_amount)]
+    is_active_array = [r.is_active for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.is_active)]
+    member_currency = [r.member_currency for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.member_currency)]
+    member_units = [r.member_units for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.member_units)]
+    fee_id_array = [r.id for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.id)]
+    fee_title_array = [r.title for r in db(db.member_fees.user_id==id_from_username).select(db.member_fees.title)]
   
-    complete_fee_array=[fee_id_array, flat_rate_array, percentage_array, per_distance_array, per_hour_array, min_amount_array, max_amount_array, is_active_array, user_currency, user_units, fee_title_array]
+    complete_fee_array=[fee_id_array, flat_rate_array, percentage_array, per_distance_array, per_hour_array, min_amount_array, max_amount_array, is_active_array, member_currency, member_units, fee_title_array]
     
     location_rating_array=db((db.ratings.ratee_id==id_from_username) & (db.ratings.ratee_type=='member')).select() 
     
-    about = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.about).__str__()[23:]
-    radius = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.delivery_radius).__str__()[33:]
+    about = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.about)[0]['about']
+    radius = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.delivery_radius)[0]['delivery_radius']
     
     lat_lng_array = []
     from gluon.tools import geocode
@@ -651,9 +436,10 @@ def member():
     delivery_username = db(db.auth_user.username==request.args(0)).select().as_list()[0]['username']
     current_location_new = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.current_location).as_list()[0]['current_location']
     
-    lat_lng_array.append((latitude, longitude, current_location_new, user_picture_array, delivery_username))
+    lat_lng_array.append((latitude, longitude, current_location_new, member_picture_array, delivery_username))
     
 
+    member_ratings = db(db.ratings.ratee_id==str(id_from_username)).select()
 
 
     return dict(
@@ -661,7 +447,7 @@ def member():
     location_rating_array=location_rating_array,
     profile_firstname = profile_firstname,
     profile_lastname = profile_lastname,
-    user_picture_array=user_picture_array,
+    member_picture_array=member_picture_array,
     complete_fee_array=complete_fee_array,
     fee_id_array=fee_id_array,
     start_availability_array=start_availability_array,
@@ -673,7 +459,8 @@ def member():
     current_location = current_location,
     about = about,
     id_from_username=id_from_username,
-    radius=radius
+    radius=radius,
+    member_ratings=member_ratings,
 
     )
 
@@ -689,7 +476,7 @@ def members():
 ####order#######################
 ################################
 def order():
-    order_list = db((db.user_orders.user_id == auth.user_id) & (db.user_orders.id == request.args(0))).select()
+    order_list = db((db.member_orders.user_id == auth.user_id) & (db.member_orders.id == request.args(0))).select()
 
     return dict(order_list=order_list)
     
@@ -697,10 +484,10 @@ def order():
 ####orders######################
 ################################
 def orders():
-    order_list = db((db.user_orders.user_id == auth.user_id) | (db.user_orders.delivery_member_id == auth.user_id)).select()
+    order_list = db((db.member_orders.user_id == auth.user_id) | (db.member_orders.delivery_member_id == auth.user_id)).select()
     order_items = dict()
     for order in order_list:
-        order_items[order['id']] = db(db.user_order_items.order_id == order['id']).select()
+        order_items[order['id']] = db(db.member_order_items.order_id == order['id']).select()
 
 
     return dict(
@@ -725,7 +512,7 @@ def stats():
 ################################
 def search():
     
-    search_form=SQLFORM(db.user_search)
+    search_form=SQLFORM(db.member_search)
     if search_form.process(session=None, formname='search_form').accepted:
         #session.flash = 'results'
         redirect(URL('search'))        
@@ -733,19 +520,15 @@ def search():
         response.flash = 'Error'
     selected_locations = db(db.locations.id==1).select(db.locations.ALL)
                     
-    search_form_user_location = request.args(0)
+    search_form_member_location = request.args(0)
     search_form_radius = request.args(1)
-    search_form_details = request.args(2)     
-    
-    #search_form_user_location = session.search_form_user_location
-    #search_form_radius = session.search_form_radius
-    #search_form_details = session.search_form_details      
+    search_form_details = request.args(2)      
    
     return dict(
     
     search_form=search_form, 
     selected_locations=selected_locations,
-    search_form_user_location=search_form_user_location,
+    search_form_member_location=search_form_member_location,
     search_form_radius=search_form_radius,
     search_form_details=search_form_details
     
@@ -775,7 +558,12 @@ def transparency():
                 
 ################################################################
 ####helpers#####################################################
-################################################################    
+################################################################    '
+
+
+@service.xmlrpc
+def add(a,b):
+    return a+b
 
 ################################################################
 ####ajax########################################################
@@ -788,8 +576,8 @@ def ajaxlivesearch():
     
     else:
         
-        address_array = [r.address for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.address)]
-        description_array = [r.description for r in db(db.user_locations.user_id==session.auth.user.id).select(db.user_locations.description)]
+        address_array = [r.address for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.address)]
+        description_array = [r.description for r in db(db.member_locations.user_id==session.auth.user.id).select(db.member_locations.description)]
          
         locations_array = [r.name for r in db(db.locations).select(db.locations.name)]
         partialstr = request.vars.values()[0]
@@ -892,7 +680,12 @@ def __onvalidation_rating_vote(form):
 def download():
     return response.download(request, db)
 
+
 def call():
+    return service()
+
+@auth.requires_login() 
+def call_login():
     return service()
 
 @auth.requires_signature()

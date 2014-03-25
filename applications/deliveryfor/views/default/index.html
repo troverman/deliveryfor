@@ -55,7 +55,7 @@
         }
 
         function copyToBox(value){
-            $("#user_search_user_location").val(value);
+            $("#member_search_member_location").val(value);
             hide();
         } 
         
@@ -65,167 +65,157 @@
 
     </script>
 {{pass}}
+<style>
+    #search-container{
+        background-color:rgb(247,247,247);
+        border-top:1px solid rgb(225,225,225);
+        border-bottom:1px solid rgb(225,225,225);
+    }
+</style>
 
 <div style="border-bottom:4px solid rgb(51,102,153);">
-    <div style="width:100%; height:350px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
+    <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
 </div>
-   
+
 <div id="delivery_images" style="margin-top:-157px;">	
     <div id="tS1" class="jThumbnailScroller" style="width:100%;margin-left:2px;margin-right:2px;">
         <div class="jTscrollerContainer">
             <div class="jTscroller">
-                <a href="#"><img src="/deliveryfor/static/images/img1.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img2.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img3.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img4.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img5.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img6.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img7.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img8.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img9.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img10.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img11.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img12.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img13.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img14.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img15.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img16.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img17.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img18.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img19.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img20.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img1.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img2.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img3.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img4.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img5.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img6.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img7.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img8.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img9.jpg" /></a>
-    			<a href="#"><img src="/deliveryfor/static/images/img10.jpg" /></a>
+                {{for picture in member_picture_array:}}
+                    <a href="#"><img src="/download/{{=picture}}/" style="height:96px;" /></a>
+                {{pass}}
             </div>
         </div>
     </div>
 </div>	   
 
-
-
 <div style="margin-left:5%;margin-right:5%;">
-        
-<br>
-<br>
-<h1 style="color:rgb(0,0,0); text-align:center;">deliveryfor... anything local</h1><hr>
-<br>              
-<div id="search_box" style="border:3px solid rgb(51,102,153);border-radius:10px;max-width:800px;margin-left:auto;margin-right:auto;">
-    <div style="padding-top:20px;padding-bottom:0px;padding-left:30px;border-radius:7px;border:3px solid rgb(100,100,100);background-color:rgb(255,255,255)">  
-        <form action="#" enctype="multipart/form-data" method="post">	
-            <table>
-                <tbody>
-                    <tr>	
-                        <td class="w2p_fw">
-                            <input class="string" id="user_search_user_location" autocomplete="on" onkeyup="getData(this.value);" name="user_location" value="" placeholder="address" type="text">
-                            {{if session.auth is None:}}
-                            {{else:}}
-                                <div id="ajaxresults"></div>
-                            {{pass}}
-                        </td>
-                        <td class="w2p_fc">
-                        <td class="w2p_fc">
-                            <a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a>
-                        </td>
-                        <td class="w2p_fc"></td>
-                        <td class="w2p_fc"></td>
-                        <td class="w2p_fw">
-                            <input class="integer" id="user_search_radius" name="radius" value="" type="text" style="width:100px;" placeholder="radius">
-                            <select style="width:60px;">
-                                <option value="volvo">mi.</option>
-                                <option value="saab">km.</option>
-                            </select>
-                        </td>
-                        <td class="w2p_fc"></td>
-                        <td class="w2p_fc"></td>
-                        <td class="w2p_fw">
-                            <input class="string" id="user_search_details" name="details" value="" type="text" style="width:100px;" placeholder="any details?">
-                        </td>
-                        <td class="w2p_fc">
-                        </td>	
-                        <td class="w2p_fl"></td>
-                        <td class="w2p_fw">
-                            <button type="submit" class="btn btn-success"><i class=" icon-search icon-white"></i></button>
-                        </td>
-                        <td class="w2p_fc"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div style="display: none;" class="hidden">
-            	<input name="_formname" value="test" type="hidden">
-            </div>
-        </form>	
-    </div>
-</div>
-<br>
-<hr>
-<br>
-
-<table style="margin-left: auto;margin-right: auto;">
-    <tr>
-        <td style="min-width:25%;">
-            <div>
-                <h3>delivery member</h3>
-                <h3>ratings</h3>
-                <h3>real-time tracking</h3>
-                <h3>freelance delivery</h3>
-            </div>
-        </td>
-        <td style="min-width:25%">
-            <div>
-                <h3>ordering</h3>
-                <p class="lead">deliveryfor... </p>
-                <p class="lead">groceries ? </p>
-                <p class="lead">food?</p>
-                <p class="lead">lumber?</p>
-            </div>
-        </td>
-        <td style="min-width:25%">
-            <div>
-                <h3>delivery member</h3>
-                deliveryfor allows you to:   <p class="lead">set your hours</p>
-                <p class="lead">set your rates</p>
-                <p class="lead">for a good cause</p>  
-            </div>  
-        </td>
-    </tr>
-</table>
-
-<div>
-{{if session.auth is None:}}
-{{else:}}
-    <hr>
     <br>
-    <h4 style="text-align:center;">reccomended for you</h4><hr>
-    {{for x in range(10):}}
-        <h5 style="text-align:center;">item/location {{=x}}</h5>
-    {{pass}}
-{{pass}}
-<br>
-<hr>  
+    <h1 style="color:rgb(0,0,0); text-align:center;">deliveryfor... {{=XML(index_header_block_list)}}</h1><hr>
+    <br> 
+</div>
+<div id="search-container">
+    <br>            
+    <div id="search_box" style="border:3px solid rgb(51,102,153);border-radius:10px;max-width:800px;margin-left:auto;margin-right:auto;">
+        <div style="padding-top:20px;padding-bottom:0px;padding-left:30px;border-radius:7px;border:3px solid rgb(100,100,100);background-color:rgb(255,255,255)">  
+            <form action="#" enctype="multipart/form-data" method="post">	
+                <table>
+                    <tbody>
+                        <tr>	
+                            <td class="w2p_fw">
+                                <input class="string" id="member_search_member_location" autocomplete="on" onkeyup="getData(this.value);" name="member_location" value="" placeholder="location" type="text">
+                                {{if session.auth is None:}}
+                                {{else:}}
+                                    <div id="ajaxresults"></div>
+                                {{pass}}
+                            </td>
+                            <td class="w2p_fc">
+                            <td class="w2p_fc">
+                                <a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a>
+                            </td>
+                            <td class="w2p_fc"></td>
+                            <td class="w2p_fc"></td>
+                            <td class="w2p_fw">
+                                <input class="integer" id="member_search_radius" name="radius" value="" type="text" style="width:100px;" placeholder="radius">
+                                <select style="width:60px;">
+                                    <option value="volvo">mi.</option>
+                                    <option value="saab">km.</option>
+                                </select>
+                            </td>
+                            <td class="w2p_fc"></td>
+                            <td class="w2p_fc"></td>
+                            <td class="w2p_fw">
+                                <input class="string" id="member_search_details" name="details" value="" type="text" style="width:100px;" placeholder="any details?">
+                            </td>
+                            <td class="w2p_fc">
+                            </td>	
+                            <td class="w2p_fl"></td>
+                            <td class="w2p_fw">
+                                <button type="submit" class="btn btn-success"><i class=" icon-search icon-white"></i></button>
+                            </td>
+                            <td class="w2p_fc"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="display: none;" class="hidden">
+                	<input name="_formname" value="test" type="hidden">
+                </div>
+            </form>	
+        </div>
+    </div>
+    <br>
+</div>
+<div style="margin-left:5%;margin-right:5%;">
+    {{if session.auth is None:}}
 
+    {{for counter, index in enumerate(index_block_list):}}
+        <div style="display:none;" id="index-scroller-{{=counter}}">
+            {{=XML(index['html_content'])}}
+        </div>
+    {{pass}}
+
+    <script>
+        $(document).ready(function() {
+            var index_block_list = {{=len(index_block_list)}} - 1;
+            $('#index-scroller-0').css('display','block');
+            function interval_function(){
+                var i = Math.round((Math.random()) * index_block_list);   
+                if (i >= index_block_list) --i;
+                for(var j = 0; j < index_block_list; j++){
+                    var css_picture_info_property = $('#index-scroller-' + j).css('display');
+                    if (css_picture_info_property == 'block'){
+                        var css_picture_info_property_index = j;
+                        $('#index-scroller-' + j).fadeToggle(1500, "linear").delay(1500);
+
+                    }
+                    $('#index-scroller-' + j).css('display','none');
+                } 
+                while (i == css_picture_info_property_index){
+                    i = Math.round((Math.random()) * index_block_list);
+                    if (i >= index_block_list) --i;                     
+                }
+                $('#index-scroller-' + i).fadeToggle(1500, "linear");
+                $('#index-scroller-' + i).css('display','block').delay(1500);
+            }; 
+            timer = setInterval(interval_function,12000);    
+        });       
+    </script>
+
+
+
+
+
+    {{else:}}
+            <hr>
+            <br>
+            <h4 style="text-align:center;">reccomended</h4><hr>
+            <table style="margin-left:auto;margin-right:auto;">
+                <tr>
+                    {{for x in range(10):}}
+                        <td><h5 style="text-align:center;">item/location {{=x}}</h5></td>
+                    {{pass}}
+                </tr>
+            </table>
+
+        {{pass}}
+        <br>
+        <hr>  
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-<script src="/deliveryfor/static/js/gmaps.js')}}"></script>
+<script src="{{=URL('static','js/gmaps.js')}}"></script>
+        <!--
 <script>   
   $(document).ready(function(){                                                         
   map = new GMaps({
   {{lat_sum=0}}
   {{lng_sum=0}}
   {{counting = 0}}
-  {{for latlng in lat_lng_array:}}
+  {{for latlng in delivery_member_array:}}
     {{counting = counting + 1}}
     {{lat_sum=lat_sum + latlng[0]}}
     {{lng_sum=lng_sum + latlng[1]}}                                        
   {{pass}}
           
-  {{if len(lat_lng_array) == 0:}}   
+  {{if len(delivery_member_array) == 0:}}   
     {{lng_avg = 0}}
     {{lat_avg = 0}}
   {{else:}}
@@ -237,192 +227,225 @@
   lat:{{=lat_avg}},
   lng:{{=lng_avg}}    
   }); 
-                     
     {{import random}}       
-    {{for lat_lng in lat_lng_array:}}
+    {{for lat_lng in delivery_member_array:}}
       map.addMarker({
       lat: {{=lat_lng[0]}},
       lng: {{=lat_lng[1]}},
-      title: '{{=lat_lng[4]}}',
+      title: '{{=lat_lng[2]}}',
       infoWindow: { 
       content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
-      <a href="/member/{{=lat_lng[4]}}">{{=lat_lng[4]}}</a><hr>\
-      <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
-      <td>{{=lat_lng[2]}}</td></tr></table>\
+      <table><tr><td>{{=lat_lng[2]}}</td></tr></table>\
       </div></div>'
       }
-      });
-      map.drawCircle({
-      lat: {{=lat_lng[0]}},
-      lng: {{=lat_lng[1]}},
-      radius: 1000   
       });
     {{pass}} 
   map.fitZoom();
   }); 
-</script>             
-<script type="javascript">
+</script>-->
+        <script>   
+          $(document).ready(function(){                                                         
+          map = new GMaps({
+          {{lat_sum=0}}
+          {{lng_sum=0}}
+          {{counting = 0}}
+          {{for latlng in delivery_member_array:}}
+            {{counting = counting + 1}}
+            {{lat_sum=lat_sum + latlng[0]}}
+            {{lng_sum=lng_sum + latlng[1]}}                                        
+          {{pass}}
+                  
+          {{if len(delivery_member_array) == 0:}}   
+            {{lng_avg = 0}}
+            {{lat_avg = 0}}
+          {{else:}}
+            {{lng_avg = lng_sum / counting}}
+            {{lat_avg = lat_sum / counting}}      
+          {{pass}}
+          div: '#map',
+          //zoom:7, 
+          lat:{{=lat_avg}},
+          lng:{{=lng_avg}}    
+          }); 
+                             
+            {{import random}}       
+            {{for lat_lng in delivery_member_array:}}
+              map.addMarker({
+              lat: {{=lat_lng[0]}},
+              lng: {{=lat_lng[1]}},
+              title: '{{=lat_lng[4]}}',
+              infoWindow: { 
+              content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+              <a href="/member/{{=lat_lng[4]}}">{{=lat_lng[4]}}</a><hr>\
+              <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+              <td>{{=lat_lng[2]}}</td></tr></table>\
+              </div></div>'
+              }
+              });
+              map.drawCircle({
+              lat: {{=lat_lng[0]}},
+              lng: {{=lat_lng[1]}},
+              radius: 1000   
+              });
+            {{pass}} 
+          map.fitZoom();
+          }); 
+        </script>
+<script type="text/javascript">
     {{an_array=[]}}
     {{import time}}
     {{array = [1,2,3,4,5]}}
     {{for counter, value in enumerate(array):}}
-    {{an_array.append([ value*1000, int(value) ])}}
-    {{pass}}                           
-    $(function() {                      
+        {{an_array.append([ value*1000, int(value) ])}}
+    {{pass}}
+
+    $(function() {
         var data = '';
         var show_graph_lines = true;
-        if (data == ''){data = {{=an_array}};}                      
+        if (data == ''){data = {{=an_array}};}                  
         var options = {
             series: {
-                lines: {
-                    show: true
-                },                              
-                points: {
-                    show: true
-                }
+                lines: {show: true},                            
+                points: {show: true}
             },
             grid: {
                 hoverable: true,
                 clickable: true
             },
-            xaxis:{
-            mode:"time",
-            },
-            yaxis: {
-                show: true,
-            },
-            selection: {
-                mode: "x"
-            },
+            xaxis:{mode:"time",},
+            yaxis: {show: true,},
+            selection: {mode: "x"},
         };
-
-        var placeholder = $.plot("#placeholder", [data], options);          
+        var placeholder = $.plot("#placeholder", [data], options);
         $("#placeholder").bind("plotselected", function (event, ranges) {
             placeholder = $.plot("#placeholder", [data], $.extend(true, {}, options, {
-                xaxis: {
+            xaxis: {
                 min: ranges.xaxis.from,
                 max: ranges.xaxis.to
-                },
-                lines: { show: show_graph_lines },
-                points: { show: true }
+            },
+            lines: { show: show_graph_lines },
+            points: { show: true }
             }));
         overview.setSelection(ranges, true);
-        });	
-                                            
+        }); 
+                                       
         function showTooltip(x, y, contents) {
             $("<div id='tooltip'>" + contents + "</div>").css({
-                position: "absolute",
-                display: "none",
-                top: y + 5,
-                left: x + 5,
-                border: "1px solid #fdd",
-                padding: "2px",
-                "background-color": "#fee",
-                opacity: 0.80
+            position: "absolute",
+            display: "none",
+            top: y + 5,
+            left: x + 5,
+            border: "1px solid #fdd",
+            padding: "2px",
+            "background-color": "#fee",
+            opacity: 0.80
             }).appendTo("body").fadeIn(200);
-        }
-                        
+        }           
         var previousPoint = null;
-        $("#placeholder").bind("plothover", function (event, pos, item) {                
+        $("#placeholder").bind("plothover", function (event, pos, item) {
             var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
-            $("#hoverdata").text(str);                           
+            $("#hoverdata").text(str);
             if (item) {
-                if (previousPoint != item.dataIndex) {           
-                    previousPoint = item.dataIndex;                 
+                if (previousPoint != item.dataIndex) {         
+                    previousPoint = item.dataIndex;
                     $("#tooltip").remove();
                     var x = item.datapoint[0].toFixed(2),
-                    y = item.datapoint[1].toFixed(2);               
+                    y = item.datapoint[1].toFixed(2);          
                     showTooltip(item.pageX, item.pageY,
                     item.series.label + " of " + x + " = " + y);
                 }
-            } 
-            else {
+            } else {
                 $("#tooltip").remove();
                 previousPoint = null;            
-            }			
-        });             
+            }           
+        });   
         $("#placeholder").bind("plotclick", function (event, pos, item) {
             if (item) {
                 $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
                 plot.highlight(item.series, item.datapoint);
             }
-        });   
+        });
+    });
 
-        $("#tS1").thumbnailScroller({
-            scrollerType:"hoverPrecise", 
-            scrollerOrientation:"horizontal", 
-            scrollSpeed:2, 
-            scrollEasing:"easeOutCirc", 
-            scrollEasingAmount:800, 
-            acceleration:0, 
-            scrollSpeed:800, 
-            noScrollCenterSpace:10, 
-            autoScrolling:1, 
-            autoScrollingSpeed:20000, 
-            autoScrollingEasing:"easeInOutQuad", 
-            autoScrollingDelay:3000 
-        });     	                                                                     
-    });	
+
 </script>
-
-<div class="tabbable tabs-left">
-    <ul class="nav nav-tabs">
-    	<li class="active"><a href="#tab1" data-toggle="tab">active delivery members</a></li>
-    	<li><a href="#tab2" data-toggle="tab">miles traveled</a></li>
-		<li><a href="#tab3" data-toggle="tab">amount given</a></li>
-        <li><a href="#tab3" data-toggle="tab">deliveries/time</a></li>
-
-
-    </ul>
-    <div class="tab-content">
-    	<div class="tab-pane active" id="tab1">
-    		1<div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
-    	</div>
-        <div class="tab-pane" id="tab2">
-            2
-        </div>
-    </div>
-</div>
-<br><hr>
-                    
-	<h4 style="text-align:center;"><a href="/about/">about</a></h4>
-    <h4 style="text-align:center;"><a href="/mission/">mission</a></h4>
-	<h4 style="text-align:center;"><a href="/privacy/">privacy</a></h4>
-    <h4 style="text-align:center;"><a href="/stats/">stats</a></h4>
-	<h4 style="text-align:center;"><a href="/terms/">terms</a></h4>
-    <h4 style="text-align:center;"><a href="/transparency/">transparency</a></h4>
-
-    <h4 style="text-align:center;">statistics</h4>
-    <h4 style="text-align:center;">statistics</h4>
-<BR><BR>
-<BR><BR>
-
-
-    <h4 style="text-align:center;">available(nearby) locations</h4>
-        geolocate? 
-	<h4 style="text-align:center;">location tags</h4><hr>
-
-    {{for location in location_list:}}
-   		<h5 style="text-align:center;"><a href="/location/{{=location['url_title']}}">{{=location['name']}}</a></h5>
-    {{pass}}
-    <hr><br>
-    <p class="lead" style="text-align:center;"><a href="/locations/">more</a></p>
     
-    <br><br>
+        <div>  
+            <table style="margin-left:auto;margin-right:auto;">
+                <tr>
+                    <td><h4 style="text-align:center;"><a href="/about/">about</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/blog/">blog</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/contact/">contact</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/faq/">faq</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/items/">items</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/locations/">locations</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/mission/">mission</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/privacy/">privacy</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/stats/">stats</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/terms/">terms</a></h4></td>
+                    <td><h4 style="text-align:center;"><a href="/transparency/">transparency</a></h4></td>
+                </tr>
+            </table>
+        </div>
+        <hr>
+<br>
+<!--
+<div>
+    this is some content
+    <div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
+</div>
+-->
+<br>
+<br>
 
-	<h4 style="text-align:center;">available(nearby) itmes</h4>
-        geolocate? 
-	<h4 style="text-align:center;">item tags</h4><hr>
+        <h4 style="text-align:center;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
+        <p style="text-align:center;">
+            {{for location in location_array:}}
+                {{for tag in location[2]:}}
+        	       <a href="/tag/{{=tag['tag']}}">{{=tag['tag']}}</a>,
+                {{pass}}
+            {{pass}}
+        </p>
+        <table style="margin-left:auto;margin-right:auto;">
+        <tr>
+            <td style="float:left;"><i class="fa fa-arrow-left"></i></td>
+            {{for location in location_array:}}
+            <td>
+                {{from random import choice}}
+                {{picture = choice(location[1])}}
+                <img class="img-polaroid" src="/download/{{=picture['picture']}}" style="height:128px"/><br>
+                <h4><a href="/location/{{=location[0]['url_title']}}/">{{=location[0]['name']}}</a></h4>
+                <h4><a href="/location/{{=location[0]['url_title']}}/">if rating (x)</a></h4>
 
-    {{for x in range(10):}}
-   		<h5 style="text-align:center;">item {{=x}}</h5>
-    {{pass}}
-    <hr><br>
-    <p class="lead" style="text-align:center;"><a href="/items/">more</a></p>
+                <br>
+            </td>
+            {{pass}}
+            <td style="margin-top:65px;margin-left:25px;"><i class="fa fa-arrow-right"></i></td>
+        </tr>
+        </table>
+
+    	<h4 style="text-align:center;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
+    	<h4 style="text-align:center;">item tags</h4><hr>
+        <table style="margin-left:auto;margin-right:auto;">
+            <tr>
+            <td style="margin-top:65px;margin-right:25px;"><i class="fa fa-arrow-left"></i></td>
+            {{for x in range(10):}}
+                <td>
+               		<h5 style="text-align:center;">item {{=x}}</h5>
+                    <h4><a href="/item/">if rating (x)</a></h4>
+                </td>
+            {{pass}}
+            <td style="float:right;"><i class="fa fa-arrow-right"></i></td>
+            </tr>
+        </table>
+
+        <hr>
+        <br>
 
 </div>
-<br><br><br>
-</div>
+<br>
+<br>
+<br>
 
 <div class="social-buttons" style="background-color:rgb(247,247,247);border-top:1px solid rgb(225,225,225);border-bottom:1px solid rgb(240,240,240);">
     <div style="border-top:1px solid rgb(240,240,240);">

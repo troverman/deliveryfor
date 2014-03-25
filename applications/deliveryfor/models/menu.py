@@ -60,8 +60,8 @@ else:
 
     if delivery_profile_id:    
                 
-        start_availability_array = [r.start_availability for r in db(db.user_availability.user_id==session.auth.user.id).select(db.user_availability.start_availability)]
-        end_availability_array = [r.end_availability for r in db(db.user_availability.user_id==session.auth.user.id).select(db.user_availability.end_availability)]
+        start_availability_array = [r.start_availability for r in db(db.member_availability.user_id==session.auth.user.id).select(db.member_availability.start_availability)]
+        end_availability_array = [r.end_availability for r in db(db.member_availability.user_id==session.auth.user.id).select(db.member_availability.end_availability)]
        
 
         
