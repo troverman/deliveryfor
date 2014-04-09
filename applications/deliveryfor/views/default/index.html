@@ -181,18 +181,14 @@
         });       
     </script>
 
-
-
-
-
     {{else:}}
             <hr>
             <br>
-            <h4 style="text-align:center;">reccomended</h4><hr>
+            <h4 style="text-align:left;">reccomended</h4><hr>
             <table style="margin-left:auto;margin-right:auto;">
                 <tr>
                     {{for x in range(10):}}
-                        <td><h5 style="text-align:center;">item/location {{=x}}</h5></td>
+                        <td><h5 style="text-align:left;">item/location {{=x}}</h5></td>
                     {{pass}}
                 </tr>
             </table>
@@ -373,17 +369,17 @@
         <div>  
             <table style="margin-left:auto;margin-right:auto;">
                 <tr>
-                    <td><h4 style="text-align:center;"><a href="/about/">about</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/blog/">blog</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/contact/">contact</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/faq/">faq</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/items/">items</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/locations/">locations</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/mission/">mission</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/privacy/">privacy</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/stats/">stats</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/terms/">terms</a></h4></td>
-                    <td><h4 style="text-align:center;"><a href="/transparency/">transparency</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/about/">about</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/blog/">blog</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/contact/">contact</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/faq/">faq</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/items/">items</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/locations/">locations</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/mission/">mission</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/privacy/">privacy</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/stats/">stats</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/terms/">terms</a></h4></td>
+                    <td><h4 style="text-align:left;"><a href="/transparency/">transparency</a></h4></td>
                 </tr>
             </table>
         </div>
@@ -398,8 +394,8 @@
 <br>
 <br>
 
-        <h4 style="text-align:center;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
-        <p style="text-align:center;">
+        <h4 style="text-align:left;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
+        <p style="text-align:left;">
             {{for location in location_array:}}
                 {{for tag in location[2]:}}
         	       <a href="/tag/{{=tag['tag']}}">{{=tag['tag']}}</a>,
@@ -424,14 +420,14 @@
         </tr>
         </table>
 
-    	<h4 style="text-align:center;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
-    	<h4 style="text-align:center;">item tags</h4><hr>
+    	<h4 style="text-align:left;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
+    	<h4 style="text-align:left;">item tags</h4><hr>
         <table style="margin-left:auto;margin-right:auto;">
             <tr>
             <td style="margin-top:65px;margin-right:25px;"><i class="fa fa-arrow-left"></i></td>
             {{for x in range(10):}}
                 <td>
-               		<h5 style="text-align:center;">item {{=x}}</h5>
+               		<h5 style="text-align:left;">item {{=x}}</h5>
                     <h4><a href="/item/">if rating (x)</a></h4>
                 </td>
             {{pass}}

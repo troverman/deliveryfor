@@ -50,6 +50,85 @@
         border-left:1px solid rgb(235,235,238);
 		border-bottom:1px solid rgb(235,235,238) 
 }
+.panel {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  margin: -15px -15px 15px;
+  font-size: 17.5px;
+  font-weight: 500;      
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dddddd;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.panel-footer {
+  padding: 10px 15px;
+  margin: 15px -15px -15px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #dddddd;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.panel-primary {
+  border-color: #428bca;
+}
+
+.panel-primary .panel-heading {
+  color: #ffffff;
+  background-color: #428bca;
+  border-color: #428bca;
+}
+
+.panel-success {
+  border-color: #d6e9c6;
+}
+
+.panel-success .panel-heading {
+  color: #468847;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
+.panel-warning {
+  border-color: #fbeed5;
+}
+
+.panel-warning .panel-heading {
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+}
+
+.panel-danger {
+  border-color: #eed3d7;
+}
+
+.panel-danger .panel-heading {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.panel-info {
+  border-color: #bce8f1;
+}
+
+.panel-info .panel-heading {
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
 </style>
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="{{=URL('static','js/gmaps.js')}}"></script>
@@ -103,24 +182,29 @@
 			$("#collapsed-left").fadeOut(300);	
 			$("#left").delay(300).fadeIn(300);	
 		});
+    $("#close-ad").click(function() {       
+        $("#ad_block").fadeToggle();        
+    });
 	});
 </script>    
 <div style="border-bottom:4px solid rgb(51,102,153);">
     <div style="width:100%; height:250px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
 </div>
+<div id="title-area" style="padding-left:15px;background-color:rgb(250,250,250);">
+    <h1>locations</h1><hr>
+  </div>
+<div id="delivery_images" style="margin-top:-157px;"> 
+    <div id="tS1" class="jThumbnailScroller" style="width:100%;margin-left:2px;margin-right:2px;">
+        <div class="jTscrollerContainer">
+            <div class="jTscroller">
+                {{for picture in location_picture_array:}}
+                    <a href="#"><img src="/download/{{=picture['picture']}}/" style="height:96px;" /></a>
+                {{pass}}
+            </div>
+        </div>
+    </div>
+</div>  		 
 
-{{for lat_lng in lat_lng_array:}}
-{{=lat_lng}}
-{{pass}}
-
-<div id="location-image">  		 
-	{{for picture in location_picture_array:}}
-		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
-	{{pass}} 		 
-</div>	
-	<div id="title-area" style="padding-left:15px;background-color:rgb(250,250,250);">
-		<h1>locations</h1><hr>
-	</div>
 
 <div id="collapsed-left" style="display:none;">
     <a id="open-left">
@@ -133,8 +217,8 @@
 <div id="left">
     <a id="collapse-left"> <h5 style="margin:0px;padding:3px;" title="minimize"> << </h5> </a>
     location tags<br>
-	{{for x in range(25):}}
-    	<p><a>tag {{=x}}</a></p>
+	  {{for location in location_array:}}
+    	<!--<p><a>{{=location[2]}}</a></p>-->
     {{pass}}
 	<br>
 	<p class="lead" style="text-align:center;"><a href="">view more</a>
@@ -142,15 +226,42 @@
 
 <br>
 <div id="right">
-	{{for x in range(5):}}
-    	<p><a>item in locations with rating / random ratings of the locations with links {{=x}}</a></p>
-    {{pass}}
+  <div style="border:1px solid rgb(235,235,235);background-color:rgb(246,250,255);padding:15px;" id="ad_block">
+    <a class="close" id="close-ad" href="#">&times;</a>
+    <div id="promoted_list">
+      {{for thread in range(5):}}
+        <a href="/thread/{{=thread}}"><h5>promoted {{=thread}}</h5></a>
+      {{pass}}          
+    </div>
+  <br>
+  </div>
+  <br><br>
+  <div class="panel panel-default">
+    <div class="panel-body">
     {{for x in range(5):}}
-    	<p><a>random ratings of the selected locations with links {{=x}}</a></p>
+      <p><a>item</a></p>
+      <p><a>location</a></p>
+      <p><a>rating</a></p>
     {{pass}}
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+     {{for x in range(5):}}
+      <p><a>location</a></p>
+      <p><a>rating</a></p>
+      <br>
+    {{pass}}
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
     {{for x in range(5):}}
-    	<p><a>available delivery members</a></p>
+      <p><a>available delivery members</a></p>
     {{pass}}
+    </div>
+  </div>
+
 </div>
 <div id="contentwrapper">
     <div id="content" style="border-right:1px solid rgb(238,238,238);padding:5px;">

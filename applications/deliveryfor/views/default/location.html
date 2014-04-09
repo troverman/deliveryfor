@@ -13,52 +13,69 @@
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="{{=URL('static','js/gmaps.js')}}"></script>
 <script>   
-  $(document).ready(function(){                                                         
+$(document).ready(function(){                                                         
   map = new GMaps({
-  {{lat_sum=0}}
-  {{lng_sum=0}}
-  {{counting = 0}}
-  {{for latlng in lat_lng_array:}}
-    {{counting = counting + 1}}
-    {{lat_sum=lat_sum + latlng[0]}}
-    {{lng_sum=lng_sum + latlng[1]}}                                        
-  {{pass}}
-          
-  {{if len(lat_lng_array) == 0:}}   
-    {{lng_avg = 0}}
-    {{lat_avg = 0}}
-  {{else:}}
-    {{lng_avg = lng_sum / counting}}
-    {{lat_avg = lat_sum / counting}}      
-  {{pass}}
-  div: '#map',
-  //zoom:7, 
-  lat:{{=lat_avg}},
-  lng:{{=lng_avg}}    
+    {{lat_sum=0}}
+    {{lng_sum=0}}
+    {{for counting, latlng in enumerate(lat_lng_array_member):}}
+      {{lat_sum=lat_sum + latlng[0]}}
+      {{lng_sum=lng_sum + latlng[1]}}                                        
+    {{pass}}
+    {{if len(lat_lng_array_member) != 0:}}
+      {{lng_avg = lng_sum / len(lat_lng_array_member)}}
+      {{lat_avg = lat_sum / len(lat_lng_array_member)}}    
+    {{else:}}
+      {{lat_avg = 0.00}}
+      {{lng_avg = 0.00}}
+    {{pass}}
+
+    div: '#map',
+    //zoom:7, 
+    lat:{{=lat_avg}},
+    lng:{{=lng_avg}}    
   }); 
                      
-{{import random}}       
-{{for lat_lng in lat_lng_array:}}
-      map.addMarker({
-      lat: {{=lat_lng[0]}},
-      lng: {{=lat_lng[1]}},
-      title: '{{=lat_lng[4]}}',
-      infoWindow: { 
-      content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
-      <a href="/member/{{=lat_lng[4]}}">{{=lat_lng[4]}}</a><hr>\
-      <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
-      <td>{{=lat_lng[2]}}</td></tr></table>\
-      </div></div>'
-      }
-      });
-      map.drawCircle({
-      lat: {{=lat_lng[0]}},
-      lng: {{=lat_lng[1]}},
-      radius: 1000   
-      });
-    {{pass}} 
+  {{import random}}       
+  {{for lat_lng in lat_lng_array_location:}}
+        map.addMarker({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        title: '{{=lat_lng[4]}}',
+        infoWindow: { 
+        content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+        <a href="/member/{{=lat_lng[4]}}/">{{=lat_lng[4]}}</a><hr>\
+        <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+        <td>{{=lat_lng[2]}}</td></tr></table>\
+        </div></div>'
+        }
+        });
+        map.drawCircle({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        radius: {{=lat_lng[5]}}   
+        });
+  {{pass}}
+  {{for lat_lng in lat_lng_array_member:}}
+        map.addMarker({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        title: '{{=lat_lng[4]}}',
+        infoWindow: { 
+        content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+        <a href="/member/{{=lat_lng[4]}}/">{{=lat_lng[4]}}</a><hr>\
+        <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+        <td>{{=lat_lng[2]}}</td></tr></table>\
+        </div></div>'
+        }
+        });
+        map.drawCircle({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        radius: {{=lat_lng[5]}}   
+        });
+  {{pass}} 
   map.fitZoom();
-  }); 
+}); 
 </script>      
 
 <div style="border-bottom:4px solid rgb(51,102,153);">
@@ -108,69 +125,77 @@
         </div>	 	                  
 		<h4><a id="ratings-expand">ratings<b class="caret" id="user-caret" style=""></b><i class="icon-star-empty" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
 		<div id="ratings-form">
-                                                                                     
-        </div>
+    </div>
                  
                  
 			<h4><a id="stats-expand">stats<b class="caret" id="user-caret" style=""></b><i class="icon-signal" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
-      			<div id="stats-form"><br>
-        			<div style="margin-left:15px">
-        				stats
-                    </div>
-        			<hr><br>	
-        		</div>
-				<h4><a id="available-delivery-members-expand">available delivery members<b class="caret" id="user-caret" style=""></b><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
+      <div id="stats-form"><br>
+        <div style="margin-left:15px">
+          stats
+        </div>
+        <hr><br>	
+      </div>
+				<h4><a id="available-delivery-members-expand">available delivery members<b class="caret" id="user-caret" style=""></b><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i>({{=len(available_member_array)}})</a></h4><hr>
 				<div id="available-delivery-members-form"><br>
-                    <div style="margin-left:15px">
-                    	{{for member in available_member_array:}}
-                        	<a href="/member/{{=db(db.auth_user.id == member['id']).select()[0]['username']}}">{{=db(db.auth_user.id == member['id']).select()[0]['username']}}</a><br>
-    						{{=member['current_location']}}<br>
-    						{{=member['delivery_radius']}}<br>
-							{{=member['home']}}<br>
-							{{=member['max_radius_from_home']}}<br>
-							ratings<br>
-							average<br>
-							<br><br>
-						{{pass}}
-                    </div>
-        		<hr><br>
-        		</div>
+          <div style="margin-left:15px">
+            {{for member in available_member_array:}}
+              <a href="/member/{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}/">{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}</a><br>
+              {{=member['current_location']}}<br>
+              {{=member['delivery_radius']}}<br>
+              {{=member['home']}}<br>
+              {{=member['max_radius_from_home']}}<br>
+              ratings<br>
+              average<br>
+              <br><br>
+            {{pass}}
+          </div>
+          <hr><br>
+        </div>
 				
+        {{the_variable = 'true'}}
+        {{if the_variable == 'true':}}
 				<h4><a id="admin-settings-expand">admin settings<b class="caret" id="user-caret" style=""></b><i class="icon-eye-open" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
 				<div id="admin-settings-form"><br>
-				
-                    <div style="margin-left:15px">
-                        admin users
-                        official delivery users
-                    </div>
-                    
-                    <hr><br>
-        		</div>
-        	</div>        
-
+          <div style="margin-left:15px">
+            admin users
+            official delivery users
+          </div>
+          <hr><br>
+          </div>
+        </div>  
+        {{pass}}      
 </div>        
    
-<h3><a id="deals-coupons-expand">deals and coupons<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr><br>
-    
+    <h3><a id="deals-coupons-expand">deals and coupons<b class="caret" id="user-caret" style=""></b><i class="icon-tags" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr><br>
     <div id="deals-coupons-form">
-      
-    <div style="margin-left:15px;">
-    
-    	deals and coupons
-    
-    </div>        
-          
-    <hr><br>    
+      <div style="margin-left:15px;">
+      	deals and coupons
+      </div>        
+      <hr><br>    
     </div>                                                                  
                                                                                        
 <h2><a id="items-expand">items<b class="caret" id="user-caret" style=""></b><i class="icon-align-justify" style="margin-left:10px;margin-top:16px;"></i></a></h2><hr>
-			
 <div id="items-form" style="margin-left:15px;">
-<br> 
+
+  {{for item in items_from_location:}}
+    <a>{{=item['title']}}</a>
+  {{pass}}
+
+  <br><br><br>
+  <br><br><br>
+
+  {{for x in range(100):}}
+    {{=x}}<br>
+  {{pass}}
+  
+  <br> 
 </div>
 
 
-
+<br>
+<br>
+<br>
+<br>
 
 <script>
         
@@ -219,3 +244,45 @@
         $("#deals-coupons-form").slideToggle();});
         
 </script>
+
+
+<div class="modal fade" id="order-items" style="display:none;float:right;">
+    <div class="modal-header" id="order-items-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>order items</h3>
+    </div>
+    <br>
+    <div class="modal-body" style="">
+      <a>this is an item</a>
+      <a>+, - form</a>
+      <a>driver dude</a>
+      <a>driver dude</a>
+      <a>details of item</a>
+      <a>price</a>
+      <br><br>
+
+      <a>this is an item</a>
+      <a>+, - form</a>
+      <a>driver dude</a>
+      <a>driver dude</a>
+      <a>details of item</a>
+      <a>price</a>
+      <br><br>
+
+      <a>this is an item</a>
+      <a>+, - form</a>
+      <a>driver dude</a>
+      <a>driver dude</a>
+      <a>details of item</a>
+      <a>price</a>
+      <br><br>
+    </div>
+    <div class="modal-footer">
+        <a class="btn">submit</a>
+    </div>
+</div> 
+
+<script>
+    $("#order-items").draggable({handle:"#order-items-header", cursor:"move"}); 
+</script>
+

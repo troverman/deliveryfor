@@ -326,29 +326,41 @@ def location():
     location_rating_array=db((db.ratings.ratee_id==id_from_url) & (db.ratings.ratee_type=='location')).select() 
                                                                                         
     from gluon.tools import geocode
-    lat_lng_array = []
+    lat_lng_array_location = []
+    lat_lng_array_member = []
     (latitude, longitude) = geocode(location_from_url[0]['complete_address'])
-    lat_lng_array.append((latitude, longitude, location_from_url[0]['name'], location_from_url[0]['name'], location_from_url[0]['description']))
+    lat_lng_array_location.append((latitude, longitude, location_from_url[0]['name'], location_from_url[0]['name'], location_from_url[0]['description'], 0))
     
+
+    ####find near_by delivery drivers, need to restict to active. na meen yeah
     import math
     (lat1, long1) = geocode(location_from_url[0]['complete_address'])
-    location_from_user = db(db.delivery_profile).select()
+    location_from_member = db(db.delivery_profile).select()
     distance_meter_array = []
-    for location in location_from_user:
+    for location in location_from_member:
         (lat2, long2) = geocode(location['current_location'])
-        degrees_to_radians = math.pi/180.0
-        phi1 = (90.0 - lat1)*degrees_to_radians
-        phi2 = (90.0 - lat2)*degrees_to_radians   
-        theta1 = long1*degrees_to_radians
-        theta2 = long2*degrees_to_radians
-        cos = (math.sin(phi1)*math.sin(phi2)*math.cos(theta1 - theta2) + math.cos(phi1)*math.cos(phi2))
-        distance_meter_array.append([float(location['delivery_radius']) - math.acos( cos ) * 6378100, float(location['max_radius_from_home']) - math.acos( cos ) * 6378100, location])
+        degrees_to_radians = math.pi / 180.0
+        phi1 = (90.0 - lat1) * degrees_to_radians
+        phi2 = (90.0 - lat2) * degrees_to_radians   
+        theta1 = long1  * degrees_to_radians
+        theta2 = long2 * degrees_to_radians
+        cos = (math.sin(phi1) * math.sin(phi2) * math.cos(theta1 - theta2) + math.cos(phi1) * math.cos(phi2))
+        distance_in_meters = math.acos(cos) * 6378100
+
+        distance_meter_array.append([float(location['delivery_radius']) - distance_in_meters, float(location['max_radius_from_home']) - distance_in_meters, location])
     available_member_array = []
     for element in distance_meter_array:
         if element[0] > 0: 
             if element[1] > 0:
                 available_member_array.append(element[2])
-    location_picture_array = db(db.location_images.location_id == id_from_url).select()                                                                                                        
+                (lat2, long2) = geocode(element[2]['current_location'])
+                username = db(db.auth_user.id == element[2]['user_id']).select()[0]['username']
+                lat_lng_array_member.append((lat2, long2, element[2]['current_location'], element[2]['current_location'], username, element[2]['delivery_radius']))
+
+    location_picture_array = db(db.location_images.location_id == id_from_url).select()  
+    items_from_location = db(db.location_item.location_id == id_from_url).select()
+
+
                                                                                                         
     return dict(
     location_picture_array=location_picture_array,
@@ -356,7 +368,9 @@ def location():
     distance_meter_array=distance_meter_array,
     location_from_url=location_from_url,
     id_from_url=id_from_url,
-    lat_lng_array=lat_lng_array,
+    lat_lng_array_member=lat_lng_array_member,
+    lat_lng_array_location=lat_lng_array_location,
+    items_from_location=items_from_location,
     )
 
 
@@ -368,14 +382,27 @@ def locations():
     location_picture_array = db(db.location_images).select()                                                                                                        
     from gluon.tools import geocode
     lat_lng_array = []
+    location_array = []
+
     for location in location_list:
         (latitude, longitude) = geocode(location['complete_address'])
         lat_lng_array.append([latitude, longitude, location['name']])
+
+        location_image=db(db.location_images.location_id == location['id']).select()
+        location_tag=db(db.location_tag.location_id == location['id']).select()
+
+        if location_image:
+            location_array.append([location,location_image,location_tag])
+        else:
+            location_array.append([location,"null",location_tag])
+
+
     
     return dict(
         lat_lng_array=lat_lng_array,
         location_list=location_list,
         location_picture_array=location_picture_array,
+        location_array=location_array,
         )
   
 ################################
@@ -429,17 +456,49 @@ def member():
     
     about = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.about)[0]['about']
     radius = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.delivery_radius)[0]['delivery_radius']
-    
-    lat_lng_array = []
+    max_radius_from_home = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.delivery_radius)[0]['max_radius_from_home']
+
+    lat_lng_array_member = []
+    lat_lng_array_location = []
     from gluon.tools import geocode
     (latitude, longitude) = geocode(current_location)
     delivery_username = db(db.auth_user.username==request.args(0)).select().as_list()[0]['username']
     current_location_new = db(db.delivery_profile.user_id==id_from_username).select(db.delivery_profile.current_location).as_list()[0]['current_location']
     
-    lat_lng_array.append((latitude, longitude, current_location_new, member_picture_array, delivery_username))
-    
-
+    lat_lng_array_member.append((latitude, longitude, current_location_new, member_picture_array, delivery_username, radius))
     member_ratings = db(db.ratings.ratee_id==str(id_from_username)).select()
+
+
+
+
+    import math
+    (lat1, long1) = geocode(current_location)
+    location_list = db(db.locations).select()
+    distance_meter_array = []
+    for location in location_list:
+        (lat2, long2) = geocode(location['complete_address'])
+        degrees_to_radians = math.pi / 180.0
+        phi1 = (90.0 - lat1) * degrees_to_radians
+        phi2 = (90.0 - lat2) * degrees_to_radians   
+        theta1 = long1  * degrees_to_radians
+        theta2 = long2 * degrees_to_radians
+        cos = (math.sin(phi1) * math.sin(phi2) * math.cos(theta1 - theta2) + math.cos(phi1) * math.cos(phi2))
+        distance_in_meters = math.acos(cos) * 6378100
+        distance_meter_array.append([float(radius) - distance_in_meters, float(max_radius_from_home) - distance_in_meters, location])
+    available_location_array = []
+    for element in distance_meter_array:
+        if element[0] > 0: 
+            if element[1] > 0:
+                available_location_array.append(element[2])
+                (lat2, long2) = geocode(element[2]['complete_address'])
+                lat_lng_array_location.append((lat2, long2, element[2]['name'], element[2]['address'], element[2]['phone_number'], 0))
+
+
+
+
+
+
+
 
 
     return dict(
@@ -455,12 +514,14 @@ def member():
     availability_id_array=availability_id_array,
     
     delivery_profile_id = delivery_profile_id,
-    lat_lng_array=lat_lng_array,
+    lat_lng_array_member=lat_lng_array_member,
+    lat_lng_array_location=lat_lng_array_location,
     current_location = current_location,
     about = about,
     id_from_username=id_from_username,
     radius=radius,
     member_ratings=member_ratings,
+    available_location_array=available_location_array,
 
     )
 
@@ -511,7 +572,7 @@ def stats():
 ####search######################
 ################################
 def search():
-    
+    from gluon.tools import geocode
     search_form=SQLFORM(db.member_search)
     if search_form.process(session=None, formname='search_form').accepted:
         #session.flash = 'results'
@@ -522,7 +583,24 @@ def search():
                     
     search_form_member_location = request.args(0)
     search_form_radius = request.args(1)
-    search_form_details = request.args(2)      
+    search_form_details = request.args(2)    
+
+    location_list = db(db.locations).select()
+    location_array = []
+    for location in location_list:
+        (latitude, longitude) = geocode(location['complete_address'])
+        lat_lng_array.append([latitude, longitude, location['name']])
+
+        location_image=db(db.location_images.location_id == location['id']).select()
+        location_tag=db(db.location_tag.location_id == location['id']).select()
+        location_item=db(db.location_item.location_id == location['id']).select()
+
+        if location_image:
+            location_array.append([location,location_image,location_tag,location_item])
+        else:
+            location_array.append([location,"null",location_tag,location_item])
+
+  
    
     return dict(
     
@@ -530,7 +608,9 @@ def search():
     selected_locations=selected_locations,
     search_form_member_location=search_form_member_location,
     search_form_radius=search_form_radius,
-    search_form_details=search_form_details
+    search_form_details=search_form_details,
+    location_array=location_array,
+    lat_lng_array=lat_lng_array,
     
     )
     

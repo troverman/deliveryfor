@@ -27,25 +27,156 @@
 </div>
 <br><br>
 <div style="margin-left:5%;margin-right:5%;">
-    <p class="lead">operating as a service.</p>
+    <p class="lead">deliveryfor operates as a service.</p>
     <p class="lead">it's time we rethought the business plan. profit from whom, again?</p>
-    <p class="lead">it's part of our mission to bring profit to humanity as oppossed to profit soly for ourselves</p>
+    <p class="lead">it's part of our mission to bring profit to humanity as oppossed to profit soley for ourselves</p>
     
-    <p class="lead">givingfor is <a href="/transparency/">transparent</a>, <a href="http://www.github.com/troverman/deliveryfor">opensource</a>, <a href="">crowd owned</a>, <a href="http://www.voetr.com/committee/deliveryfor">voetr enabled</a>, and <a href="http://www.givingfor.com">givingfor</a> connected.</p>
+    <p class="lead">deliveryfor is <a href="/transparency/">transparent</a>, <a href="http://www.github.com/troverman/deliveryfor">opensource</a>, <a href="http://www.conex.us/project/deliveryfor/">crowd owned and operated</a>, <a href="http://www.voetr.com/committee/deliveryfor/">voetr enabled</a>, and <a href="http://www.givingfor.com/project/deliveryfor/">givingfor</a> connected.</p>
     <p class="lead">do you think deliveryfor adds postive value to society as a whole?</p>
+    <p class="lead"><a href="/contact/">contact</a> us and tell us what you think</p>
+    <p class="lead">remeber, you can have a say in how things are done</p>
+    <br><br>
+    <h4>giving statistics</h4>
+    <script type="text/javascript">
+        {{an_array=[]}}
+        {{import time}}
+        {{array = [1,2,3,4,5]}}
+        {{for counter, value in enumerate(array):}}
+            {{an_array.append([ value*1000, int(value) ])}}
+        {{pass}}
+        $(function() {            
+            var data = '';
+            var show_graph_lines = true;
+            if (data == ''){data = {{=an_array}};}               
+            var options = {
+                series: {
+                    lines: {
+                        show: true
+                    },
+                    points: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                },
+                xaxis:{
+                    mode:"time",
+                },
+                yaxis: {
+                    show: true,
+                },
+                selection: {
+                    mode: "x"
+                },
+            };
     
+            var placeholder = $.plot("#placeholder", [data], options);
+            $("#placeholder").bind("plotselected", function (event, ranges) {
+                placeholder = $.plot("#placeholder", [data], $.extend(true, {}, options, {
+                    xaxis: {
+                        min: ranges.xaxis.from,
+                        max: ranges.xaxis.to
+                    },
+                    lines: { show: show_graph_lines },
+                    points: { show: true }
+                }));
+                overview.setSelection(ranges, true);
+            }); 
+            function showTooltip(x, y, contents) {
+                $("<div id='tooltip'>" + contents + "</div>").css({
+                    position: "absolute",
+                    display: "none",
+                    top: y + 5,
+                    left: x + 5,
+                    border: "1px solid #fdd",
+                    padding: "2px",
+                    "background-color": "#fee",
+                    opacity: 0.80
+                }).appendTo("body").fadeIn(200);
+            }
+            var previousPoint = null;
+            $("#placeholder").bind("plothover", function (event, pos, item) {               
+                var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
+                $("#hoverdata").text(str);
+                                           
+                if (item) {
+                    if (previousPoint != item.dataIndex) {
+                        previousPoint = item.dataIndex;
+                        $("#tooltip").remove();
+                        var x = item.datapoint[0].toFixed(2),
+                        y = item.datapoint[1].toFixed(2);
+                        showTooltip(item.pageX, item.pageY,
+                        item.series.label + " of " + x + " = " + y);
+                    }
+                } else {
+                    $("#tooltip").remove();
+                    previousPoint = null;            
+                }           
+            });
+            $("#placeholder").bind("plotclick", function (event, pos, item) {
+                if (item) {
+                    $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                    plot.highlight(item.series, item.datapoint);
+                }
+            });         
+        }); 
+    </script>
+    <div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
+
     <br><br>
     <h3>friends</h3><hr>
-    <p class="lead"><a href="http://www.bankingfor.com">bankingfor</a></p>
-    <p class="lead"><a href="http://www.conex.us">conex.us</a></p>
-	<p class="lead"><a href="http://www.epoint.me">epoint.me</a></p>
-    <p class="lead"><a href="http://www.evolvedus.com">evolved us</a></p>
-    <p class="lead"><a href="http://givingfor.com">givingfor</a></p>
-    <p class="lead"><a href="http://hospitalityfor.com">hospitalityfor</a></p>
-    <p class="lead"><a href="http://inlrn.com">inlrn</a></p>
-    <p class="lead"><a href="http://insuringfor.com">insuringfor</a></p>
-    <p class="lead"><a href="http://investingfor.com">investingfor</a></p>
-    <p class="lead"><a href="http://lealr.com">lealr</a></p>
-    <p class="lead"><a href="http://troverman.com">troverman</a></p>
-    <p class="lead"><a href="http://voetr.com">voetr</a></p>
+    <div id="project-list-container">
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.bankingfor.com">bankingfor</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.conex.us">conex.us</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.epoint.me">epoint.me</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.evolvedus.com">evolved us</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.givingfor.com">givingfor</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.hospitalityfor.com">hospitalityfor</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.inlrn.com">inlrn</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.insuringfor.com">insuringfor</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.investingfor.com">investingfor</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.lealr.com">lealr</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.troverman.com">troverman</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <div id="project-list-item">
+            <p class="lead"><a href="http://www.voetr.com">voetr</a></p>
+            <a href=""><img style="width:256px;" class="img-polaroid" src="/conexus/static/images/noimage-icon.png"/></a>
+        </div>
+        <br><br>
+    </div>
+
 </div>

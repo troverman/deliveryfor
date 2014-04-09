@@ -94,7 +94,6 @@ db.define_table('item_images',
 db.define_table('locations',
     Field('url_title','string'),
     Field('name','string'),
-    Field('hours_of_operation','string'),
     Field('days_of_operation','string'),
     Field('description','string'),
     Field('address', 'string', requires=IS_NOT_EMPTY()),
@@ -108,6 +107,17 @@ db.define_table('locations',
     Field('admin_id_array', 'string', readable=False, writable=False),
 
 )
+
+################################
+####location_hours##############
+################################
+#db.define_table('location_hours',
+#    Field('location_id', 'reference locations'),
+#    Field('opening_time', 'time'),
+#    Field('closing_time', 'time'),
+#    Field('week_day', 'datetime')
+ #   Field('specific_day', 'datetime'),
+#)
 
 ################################
 ####location_images#############

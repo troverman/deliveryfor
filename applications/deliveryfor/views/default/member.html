@@ -14,13 +14,66 @@
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="{{=URL('static','js/gmaps.js')}}"></script>
 <script>   
-  $(document).ready(function(){                                                         
-    new GMaps({
-      div: '#map',
-      lat: -12.043333,
-      lng: -77.028333
-    });
+$(document).ready(function(){                                                         
+  map = new GMaps({
+    {{lat_sum=0}}
+    {{lng_sum=0}}
+    {{for counting, latlng in enumerate(lat_lng_array_member):}}
+      {{lat_sum=lat_sum + latlng[0]}}
+      {{lng_sum=lng_sum + latlng[1]}}                                        
+    {{pass}}
+            
+    {{lng_avg = lng_sum / len(lat_lng_array_member)}}
+    {{lat_avg = lat_sum / len(lat_lng_array_member)}}      
+    div: '#map',
+    //zoom:7, 
+    lat:{{=lat_avg}},
+    lng:{{=lng_avg}}    
   }); 
+    {{for lat_lng in lat_lng_array_member:}}
+        map.addMarker({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        title: '{{=lat_lng[4]}}',
+        infoWindow: { 
+        content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+        <a href="/member/{{=lat_lng[4]}}/">{{=lat_lng[4]}}</a><hr>\
+        <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+        <td>{{=lat_lng[2]}}</td></tr></table>\
+        </div></div>'
+        }
+        });
+        map.drawCircle({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        radius: {{=lat_lng[5]}}   
+        });
+    {{pass}}              
+  {{for lat_lng in lat_lng_array_location:}}
+        map.addMarker({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        title: '{{=lat_lng[4]}}',
+        infoWindow: { 
+        content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+        <a href="/member/{{=lat_lng[4]}}/">{{=lat_lng[4]}}</a><hr>\
+        <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+        <td>{{=lat_lng[2]}}</td></tr></table>\
+        </div></div>'
+        }
+        });
+        map.drawCircle({
+        lat: {{=lat_lng[0]}},
+        lng: {{=lat_lng[1]}},
+        radius: {{=lat_lng[5]}}   
+        });
+  {{pass}}
+
+
+
+
+});
+
 </script>
 <div style="border-bottom:4px solid rgb(51,102,153);">
     <div style="width:100%; height:250px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
@@ -63,10 +116,14 @@
 <div style="margin-left:5%;margin-right:5%">
 <br>
 
-<p class="lead" style="margin-left:15px;">{{=about}}</p>
-<i class="fa fa-location-arrow"></i><p>{{=current_location}}</p>
-<i class="fa fa-circle-o"></i>
+<p class="lead" style="margin-left:15px">{{=about}}</p><hr><br>
+
+<i style="float:left;padding-left:15px;padding-top:5px;" class="fa fa-location-arrow"></i>
+<p class="lead">{{=current_location}}</p>
+
+<i style="float:left;padding-left:15px;padding-top:5px;" class="fa fa-circle-o"></i>
 <p class="lead">{{=radius}}km/mi delivery radius</p>
+<br><hr><br>
 <p class="lead">$x minimum order price</p>
 <p>x concurrent orders</p>
 <p>paypal / bankingfor / payment</p>
@@ -84,10 +141,9 @@
 <hr>
 
 {{for the_counter, rating in enumerate(member_ratings):}}
-
-{{=rating['rating']}}
-{{=rating['description']}}
-
+    <p>{{=rating['rating']}}</p>
+    <p>{{=rating['description']}}</p>
+    <br><br>
 {{pass}}            
     
     
@@ -292,6 +348,12 @@
 </div>
 	
 <h3>available locations</h3><hr>
+
+
+{{for location in available_location_array:}}
+<h4><a href="/location/{{=location['url_title']}}">{{=location['name']}}</a></h4>
+{{pass}}
+
 <h3>available items</h3><hr>
 
     {{if delivery_profile_id:}}
@@ -306,7 +368,6 @@
 <br>
 <br>
 
-<script src="{{=URL('static','js/gmaps.js')}}"></script>
 <script>
     $("#member_availibility-form").show("slow");
     $("#availibility-expand").click(function () {
