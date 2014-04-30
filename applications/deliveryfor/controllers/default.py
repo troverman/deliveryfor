@@ -268,19 +268,55 @@ def index():
     location_list = db(db.locations).select()
     location_array = []
     location_image_array=[]
+    location_tag_list = []
     for location in location_list:
         location_image=db(db.location_images.location_id == location['id']).select()
+        location_tag_list.append(db(db.location_tag.location_id == location['id']).select())
+
         location_tag=db(db.location_tag.location_id == location['id']).select()
         if location_image:
             location_array.append([location,location_image,location_tag])
+    location_tag_list_array = []
+    for tag_list in location_tag_list:
+        for tag in tag_list:
+            location_tag_list_array.append(tag['tag'])   
+
+
+
+    set_location_tag_list = set(location_tag_list_array)
+    tag_location_list_unsorted = list(set_location_tag_list)
+    combined_count_and_tag_array=[]
+    for tag in tag_location_list_unsorted:
+        combined_count_and_tag_array.append([tag, location_tag_list_array.count(tag)])
+    from operator import itemgetter
+    tag_location_list_sorted_by_total_count = sorted(combined_count_and_tag_array, key=itemgetter(1))  
+
+
+
 
     index_block_list = db(db.html_block.html_type == 'index').select().as_list()
     random.shuffle(index_block_list)
     index_header_block_list = db(db.html_block.html_type == 'index-header').select().as_list()
     random.shuffle(index_header_block_list)
     index_header_block_list = index_header_block_list[0]['html_content']
+
+
+
+
+
+
+    #for location in location_list:
+        #location_tag_list.append(db(db.location_tag.location_id == location['id']).select())
+        #location_picture_list.append(db(db.location_images.location_id == location['id']).select())
+
+    
+
+
+
+
     
     return dict(
+        tag_location_list_sorted_by_total_count=tag_location_list_sorted_by_total_count,
         index_header_block_list=index_header_block_list,
         delivery_member_array=delivery_member_array,
         search_form=search_form,
@@ -360,6 +396,7 @@ def location():
     location_picture_array = db(db.location_images.location_id == id_from_url).select()  
     items_from_location = db(db.location_item.location_id == id_from_url).select()
 
+    member_orders_from_location = db((db.member_orders.location_id == id_from_url) & (db.member_orders.member_id == auth.user_id)).select()
 
                                                                                                         
     return dict(
@@ -371,6 +408,7 @@ def location():
     lat_lng_array_member=lat_lng_array_member,
     lat_lng_array_location=lat_lng_array_location,
     items_from_location=items_from_location,
+    member_orders_from_location=member_orders_from_location,
     )
 
 
@@ -379,7 +417,47 @@ def location():
 ################################
 def locations():
     location_list = db(db.locations).select()
-    location_picture_array = db(db.location_images).select()                                                                                                        
+    location_picture_array = db(db.location_images).select()   
+    delivery_member_array = db(db.delivery_profile).select()
+
+
+
+
+
+
+
+    location_tag_list = []
+    location_picture_list = []
+    for location in location_list:
+        location_tag_list.append(db(db.location_tag.location_id == location['id']).select())
+        location_picture_list.append(db(db.location_images.location_id == location['id']).select())
+
+    location_tag_list_array = []
+    for tag_list in location_tag_list:
+        for tag in tag_list:
+            location_tag_list_array.append(tag['tag'])   
+
+    set_location_tag_list = set(location_tag_list_array)
+    tag_location_list_unsorted = list(set_location_tag_list)
+    combined_count_and_tag_array=[]
+    for tag in tag_location_list_unsorted:
+        combined_count_and_tag_array.append([tag, location_tag_list_array.count(tag)])
+    from operator import itemgetter
+    tag_location_list_sorted_by_total_count = sorted(combined_count_and_tag_array, key=itemgetter(1))  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from gluon.tools import geocode
     lat_lng_array = []
     location_array = []
@@ -403,6 +481,8 @@ def locations():
         location_list=location_list,
         location_picture_array=location_picture_array,
         location_array=location_array,
+        tag_location_list_sorted_by_total_count=tag_location_list_sorted_by_total_count,
+        delivery_member_array=delivery_member_array,
         )
   
 ################################
@@ -537,7 +617,7 @@ def members():
 ####order#######################
 ################################
 def order():
-    order_list = db((db.member_orders.user_id == auth.user_id) & (db.member_orders.id == request.args(0))).select()
+    order_list = db((db.member_orders.member_id == auth.user_id) & (db.member_orders.id == request.args(0))).select()
 
     return dict(order_list=order_list)
     
@@ -545,7 +625,8 @@ def order():
 ####orders######################
 ################################
 def orders():
-    order_list = db((db.member_orders.user_id == auth.user_id) | (db.member_orders.delivery_member_id == auth.user_id)).select()
+    order_list = db(db.member_orders.member_id == auth.user_id).select()
+    order_list_delivery = db(db.member_orders.delivery_member_id == auth.user_id).select()
     order_items = dict()
     for order in order_list:
         order_items[order['id']] = db(db.member_order_items.order_id == order['id']).select()
@@ -672,6 +753,13 @@ def ajaxlivesearch():
                 items.append(DIV(A(description, _id="res%s"%counter2, _href="#", _onclick="copyToBox($('#res%s').html())"%counter2), _id="resultLiveSearch"))
                                  
     return TAG[''](*items)
+
+
+def ajax_add_item_to_order():
+    location_id = int(request.vars.location_id)
+    db.member_orders.insert(member_id = auth.user_id, location_id = location_id, delivery_member_id = 1)
+    jquery = "jQuery('.flash').html('item added').slideDown().delay(1000).slideUp();"
+    return jquery
 
 
 ################################################################

@@ -81,7 +81,17 @@ $(document).ready(function(){
 <div style="border-bottom:4px solid rgb(51,102,153);">
     <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
 </div>
-
+<div style="float:right;position:fixed;left:80%;" class="well">
+  {{for member in member_orders_from_location:}}
+    {{=member['member_id']}}<br>
+  {{pass}}
+  <p class="lead">item 1, price, delivery member, -, +</p>
+  <p class="lead">item 2, price, delivery member, -, +</p>
+  <p class="lead">item 3, price, delivery member, -, +</p>
+  <p class="lead">item 4, price, delivery member, -, +</p>
+  <p class="lead">item 5, price, delivery member, -, +</p>
+  <p class="btn"><a href="/orders/">continue</a></p>
+</div>
 <div style="margin-left:5%;margin-right:5%;">
     {{if session.search_history:}}
         <a href="/search/{{=session.search_history}}">return to search</a>
@@ -108,7 +118,9 @@ $(document).ready(function(){
     {{pass}}
     </p>
 	<p class="lead">{{=location_from_url[0]['description']}}</p>
-    <p class="lead">open / closed (hours) / x available drivers</p>
+    <p class="lead"><span style="color:rgb(0,100,0);">open</span> / <span style="color:rgb(100,50,0);">closed</span></p>
+    <a><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i>({{=len(available_member_array)}})</a>
+
     <h3><a id="details-expand">details<b class="caret" id="user-caret" style=""></b><i class="icon-list" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr>	
     <div id="details-form" style="margin-left:15px;">    
 		<h4><a id="information-expand">information<b class="caret" id="user-caret" style=""></b><i class="icon-info-sign" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
@@ -131,7 +143,14 @@ $(document).ready(function(){
 			<h4><a id="stats-expand">stats<b class="caret" id="user-caret" style=""></b><i class="icon-signal" style="margin-left:10px;margin-top:6px;"></i></a></h4><hr>
       <div id="stats-form"><br>
         <div style="margin-left:15px">
-          stats
+          deliveryies / time<br>
+          most popular item<br>
+          cash per time<br>
+          average delivery member saturation<br>
+          most popular times<br>
+
+
+
         </div>
         <hr><br>	
       </div>
@@ -181,12 +200,14 @@ $(document).ready(function(){
     <a>{{=item['title']}}</a>
   {{pass}}
 
-  <br><br><br>
-  <br><br><br>
+  <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
+    <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
+    <a onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
+      <h5 class="btn">add item to order</h5>      
+    </a>
+  </div>
 
-  {{for x in range(100):}}
-    {{=x}}<br>
-  {{pass}}
+  <br><br><br>
   
   <br> 
 </div>
@@ -244,45 +265,3 @@ $(document).ready(function(){
         $("#deals-coupons-form").slideToggle();});
         
 </script>
-
-
-<div class="modal fade" id="order-items" style="display:none;float:right;">
-    <div class="modal-header" id="order-items-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>order items</h3>
-    </div>
-    <br>
-    <div class="modal-body" style="">
-      <a>this is an item</a>
-      <a>+, - form</a>
-      <a>driver dude</a>
-      <a>driver dude</a>
-      <a>details of item</a>
-      <a>price</a>
-      <br><br>
-
-      <a>this is an item</a>
-      <a>+, - form</a>
-      <a>driver dude</a>
-      <a>driver dude</a>
-      <a>details of item</a>
-      <a>price</a>
-      <br><br>
-
-      <a>this is an item</a>
-      <a>+, - form</a>
-      <a>driver dude</a>
-      <a>driver dude</a>
-      <a>details of item</a>
-      <a>price</a>
-      <br><br>
-    </div>
-    <div class="modal-footer">
-        <a class="btn">submit</a>
-    </div>
-</div> 
-
-<script>
-    $("#order-items").draggable({handle:"#order-items-header", cursor:"move"}); 
-</script>
-

@@ -189,7 +189,8 @@ db.define_table('location_item_tag',
 ####member_orders###############
 ################################ 
 db.define_table('member_orders',
-    Field('user_id', 'reference auth_user', default=auth.user_id, readable=False, writable=False),
+    Field('member_id', 'reference auth_user', default=auth.user_id, readable=False, writable=False),
+    Field('location_id', 'string', readable=False, writable=False),
     Field('order_status', 'string', default='pending', readable=False, writable=False),
     Field('delivery_member_id', 'string', readable=False, writable=False)
 )
@@ -199,7 +200,7 @@ db.define_table('member_orders',
 ################################   
 db.define_table('member_order_items',
     Field('order_id', 'reference user_order_items'),
-    Field('user_id', 'reference auth_user', default=auth.user_id, readable=False, writable=False),
+    Field('member_id', 'reference auth_user', default=auth.user_id, readable=False, writable=False),
     Field('location_id','integer', default=default_location, readable=False, writable=False, requires=IS_NOT_EMPTY()),
     Field('item_id','integer', readable=False, writable=False, requires=IS_NOT_EMPTY()),
     Field('order_item_title', 'string'),

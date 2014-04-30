@@ -118,20 +118,22 @@ $(document).ready(function(){
 
 <p class="lead" style="margin-left:15px">{{=about}}</p><hr><br>
 
-<i style="float:left;padding-left:15px;padding-top:5px;" class="fa fa-location-arrow"></i>
+<i style="float:left;padding-left:15px;padding-top:5px;font-size:64px;" class="fa fa-location-arrow"></i>
 <p class="lead">{{=current_location}}</p>
 
-<i style="float:left;padding-left:15px;padding-top:5px;" class="fa fa-circle-o"></i>
+<i style="float:left;padding-left:15px;padding-top:5px;font-size:64px;" class="fa fa-circle-o"></i>
 <p class="lead">{{=radius}}km/mi delivery radius</p>
 <br><hr><br>
 <p class="lead">$x minimum order price</p>
 <p>x concurrent orders</p>
 <p>paypal / bankingfor / payment</p>
 
+
+
 <table>
 <tr>
     <td>
-        <h4><a href="">ratings</a></h4>
+        <h4><a id="rating-expand" href="">ratings</a></h4>
     </td>
     <td style="padding:0px">
         <p class="lead" style="margin-top:22px;margin-left:10px;font-size:18px;">1 2 3 4 5 (10)</p>
@@ -140,12 +142,16 @@ $(document).ready(function(){
 </table>
 <hr>
 
+<div id="rating-list">
 {{for the_counter, rating in enumerate(member_ratings):}}
     <p>{{=rating['rating']}}</p>
     <p>{{=rating['description']}}</p>
     <br><br>
-{{pass}}            
+{{pass}}   
+</div>         
     
+
+
     
 <h4><a id="availibility-expand">availabilities<b class="caret" id="user-caret" style=""></b><i class="icon-time" style="margin-top:7px;margin-left:20px;"></i></a></h4><hr>    
 <div id="member_availibility-form">
@@ -375,5 +381,7 @@ $(document).ready(function(){
 	$("#member_fee-form").show("slow");
     $("#fee-expand").click(function () {
     $("#member_fee-form").slideToggle();});
+    ("#rating-expand").click(function () {
+    $("#rating-list").slideToggle();});
 </script>
 

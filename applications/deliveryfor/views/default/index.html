@@ -71,6 +71,10 @@
         border-top:1px solid rgb(225,225,225);
         border-bottom:1px solid rgb(225,225,225);
     }
+    #project-list-container{text-align:center;width:100%;}
+    #project-list-item{border:2px solid rgb(180,180,180);display:inline-block;padding:10px;margin:7px;}
+    #project-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;background-color:rgb(255,255,255);}
+
 </style>
 
 <div style="border-bottom:4px solid rgb(51,102,153);">
@@ -396,44 +400,42 @@
 
         <h4 style="text-align:left;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
         <p style="text-align:left;">
-            {{for location in location_array:}}
-                {{for tag in location[2]:}}
-        	       <a href="/tag/{{=tag['tag']}}">{{=tag['tag']}}</a>,
-                {{pass}}
+            {{for tag in reversed(tag_location_list_sorted_by_total_count):}}
+            <div id="tag-list-item" style="margin-right:15px;font-family:ubuntu;float:left;">                         
+              <a href="/tags/{{=tag[0]}}" >{{=tag[0]}}</a>
+              <a style="color:rgb(210,210,210);" href="/tags/{{=tag[0]}}"> ( {{=tag[1]}} ) </a>
+            </div>
             {{pass}}
+
+
         </p>
-        <table style="margin-left:auto;margin-right:auto;">
-        <tr>
-            <td style="float:left;"><i class="fa fa-arrow-left"></i></td>
+        <br><br>
+        <div id="project-list-container">
             {{for location in location_array:}}
-            <td>
+            <div id="project-list-item">
                 {{from random import choice}}
                 {{picture = choice(location[1])}}
                 <img class="img-polaroid" src="/download/{{=picture['picture']}}" style="height:128px"/><br>
                 <h4><a href="/location/{{=location[0]['url_title']}}/">{{=location[0]['name']}}</a></h4>
-                <h4><a href="/location/{{=location[0]['url_title']}}/">if rating (x)</a></h4>
-
+                <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
                 <br>
-            </td>
+            </div>
             {{pass}}
-            <td style="margin-top:65px;margin-left:25px;"><i class="fa fa-arrow-right"></i></td>
-        </tr>
-        </table>
-
+        </div>
+        <br><br><br>
+        
     	<h4 style="text-align:left;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
     	<h4 style="text-align:left;">item tags</h4><hr>
-        <table style="margin-left:auto;margin-right:auto;">
-            <tr>
-            <td style="margin-top:65px;margin-right:25px;"><i class="fa fa-arrow-left"></i></td>
-            {{for x in range(10):}}
-                <td>
-               		<h5 style="text-align:left;">item {{=x}}</h5>
-                    <h4><a href="/item/">if rating (x)</a></h4>
-                </td>
+        <div id="project-list-container">
+            {{for item in range(5):}}
+            <div id="project-list-item">
+                <img class="img-polaroid" src="/download/" style="height:128px"/><br>
+                <h4><a href="/item/">item {{=item}}</a></h4>
+                <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
+                <br>
+            </div>
             {{pass}}
-            <td style="float:right;"><i class="fa fa-arrow-right"></i></td>
-            </tr>
-        </table>
+        </div>
 
         <hr>
         <br>
