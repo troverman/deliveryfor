@@ -757,7 +757,9 @@ def ajaxlivesearch():
 
 def ajax_add_item_to_order():
     location_id = int(request.vars.location_id)
-    db.member_orders.insert(member_id = auth.user_id, location_id = location_id, delivery_member_id = 1)
+    item_id = int(request.vars.item_id)
+
+    db.member_order_items.insert(member_id = auth.user_id, location_id = location_id, delivery_member_id = 1, item_id = item_id)
     jquery = "jQuery('.flash').html('item added').slideDown().delay(1000).slideUp();"
     return jquery
 

@@ -132,10 +132,8 @@ db.define_table('location_images',
 ####location_tag################
 ################################
 db.define_table('location_tag',
-
     Field('location_id', 'string', readable=False, writable=False),
     Field('tag', 'string', readable=False, writable=False),
-
 )
 default_location = 0    
 location_category_array_modified=[]
@@ -160,10 +158,18 @@ db.define_table('location_image',
 )
 
 ################################
-####location_item_detail########
+####location_item_option########
 ################################
-db.define_table('location_item_detail',
-    Field('location_item_id', 'string', readable=False, writable=False),
+db.define_table('location_item_option',
+    Field('location_item_id','string'),
+    Field('item_option_type','string'),
+)
+
+################################
+####location_item_option_detail#
+################################
+db.define_table('location_item_option_detail',
+    Field('location_item_option_id', 'string', readable=False, writable=False),
     Field('detail','string'),
     Field('detail_type','text'),
 )

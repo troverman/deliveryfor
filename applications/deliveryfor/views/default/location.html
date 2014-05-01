@@ -98,7 +98,12 @@ $(document).ready(function(){
     {{pass}}
     
     <div style="margin-left:10px;">
-    	<br><h1>{{=location_from_url[0]['name']}}</h1><hr><br>
+    	<br><h1>{{=location_from_url[0]['name']}}</h1>
+      <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
+      <a id="available-delivery-members-anchor" href="#available-delivery-members-expand"><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i>({{=len(available_member_array)}})</a>
+      <p class="lead"><span style="color:rgb(0,100,0);">open</span> / <span style="color:rgb(100,50,0);">closed</span></p>
+      <hr><br>
+
 	<div id="location-image">
    		 
 		{{for picture in location_picture_array:}}
@@ -118,8 +123,6 @@ $(document).ready(function(){
     {{pass}}
     </p>
 	<p class="lead">{{=location_from_url[0]['description']}}</p>
-    <p class="lead"><span style="color:rgb(0,100,0);">open</span> / <span style="color:rgb(100,50,0);">closed</span></p>
-    <a><i class="icon-user" style="margin-left:10px;margin-top:6px;"></i>({{=len(available_member_array)}})</a>
 
     <h3><a id="details-expand">details<b class="caret" id="user-caret" style=""></b><i class="icon-list" style="margin-left:10px;margin-top:10px;"></i></a></h3><hr>	
     <div id="details-form" style="margin-left:15px;">    
@@ -196,16 +199,42 @@ $(document).ready(function(){
 <h2><a id="items-expand">items<b class="caret" id="user-caret" style=""></b><i class="icon-align-justify" style="margin-left:10px;margin-top:16px;"></i></a></h2><hr>
 <div id="items-form" style="margin-left:15px;">
 
+  <div class="dropdown" style="float:right;margin-right:15px;">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">sort by: <b style="margin-left:5px;"class="caret"></b></a>
+    <ul class="dropdown-menu pull-right" style="left:auto;width:158px;min-width:0px;" role="menu" aria-labelledby="dLabel">
+      <li><a tabindex="-1" href="#">most recent</a></li>
+      <li><a tabindex="-1" href="#">relevancy</a></li>
+      <li><a tabindex="-1" href="#">highest price</a></li>
+      <li><a tabindex="-1" href="#">lowest price</a></li>
+    </ul>
+  </div>
+  <div class="btn-toolbar" style="margin-left:15px;float:left;">
+    <div class="btn-group">
+      <a class="btn active" id="view-list"><i class="icon-align-justify"></i></a>
+      <a class="btn" id="view-table"><i class="icon-th"></i></a>
+    </div>
+  </div>
+
+  <hr>
+  <br>
+  <br>
+
   {{for item in items_from_location:}}
-    <a>{{=item['title']}}</a>
+    <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
+      <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
+      <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
+
+      <a onclick="ajax('/ajax_add_item_to_order/', ['location_id','item_id'], ':eval');">
+        <h5 class="btn">add item to order</h5>      
+      </a>
+    </div>
+    <a>{{=item['title']}}</a><br>
+    <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
+    <br>
+
+
   {{pass}}
 
-  <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
-    <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
-    <a onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
-      <h5 class="btn">add item to order</h5>      
-    </a>
-  </div>
 
   <br><br><br>
   
@@ -234,6 +263,9 @@ $(document).ready(function(){
         $("#available-delivery-membersform").show("slow");
         $("#available-delivery-members-form").hide();
         $("#available-delivery-members-expand").click(function () {
+        $("#available-delivery-members-form").slideToggle();});
+
+        $("#available-delivery-members-anchor").click(function () {
         $("#available-delivery-members-form").slideToggle();});
                 
         $("#admin-settings-form").show("slow");
