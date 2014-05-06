@@ -81,15 +81,18 @@ $(document).ready(function(){
 <div style="border-bottom:4px solid rgb(51,102,153);">
     <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
 </div>
-<div style="float:right;position:fixed;left:80%;" class="well">
+<div style="float:right;position:fixed;left:80%;max-height:400px;" class="well">
   {{for member in member_orders_from_location:}}
     {{=member['member_id']}}<br>
   {{pass}}
-  <p class="lead">item 1, price, delivery member, -, +</p>
-  <p class="lead">item 2, price, delivery member, -, +</p>
-  <p class="lead">item 3, price, delivery member, -, +</p>
-  <p class="lead">item 4, price, delivery member, -, +</p>
-  <p class="lead">item 5, price, delivery member, -, +</p>
+  {{for x in range(2):}}
+    <a href="">+</a><a href="">x</a><a href="">-</a>
+    <p class="lead">item title</p>
+    <p class="lead">item description</p>
+    <p class="lead">delivery member</p>
+    <p class="lead">price(s)</p>
+  {{pass}}
+  <hr>
   <p class="btn"><a href="/orders/">continue</a></p>
 </div>
 <div style="margin-left:5%;margin-right:5%;">
@@ -224,7 +227,7 @@ $(document).ready(function(){
       <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
       <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
 
-      <a onclick="ajax('/ajax_add_item_to_order/', ['location_id','item_id'], ':eval');">
+      <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id','item_id'], ':eval');">
         <h5 class="btn">add item to order</h5>      
       </a>
     </div>
@@ -232,7 +235,18 @@ $(document).ready(function(){
     <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
     <br>
 
-
+  <div class="modal fade" id="add-item" style="display:none;">
+    <div class="modal-header" id="add-item-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>add {{=item['title']}}</h3>
+    </div>
+    <br>
+    <div class="modal-body" style="">
+      available delivery drivers.... select one bro
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div>
   {{pass}}
 
 
@@ -248,7 +262,8 @@ $(document).ready(function(){
 <br>
 
 <script>
-        
+        $("#add-item").draggable({handle:"#add-item-header", cursor:"move"}); 
+
         $("#ratings-form").show("slow");
         $("#ratings-form").hide();
         $("#ratings-expand").click(function () {
