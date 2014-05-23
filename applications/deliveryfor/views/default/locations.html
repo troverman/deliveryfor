@@ -323,11 +323,14 @@
             <a class="btn" id="view-table"><i class="icon-th"></i></a>
         </div>
     </div>
+    <br><br>
+    <hr>
 		<div id="location-list-container" style="padding-left:15px;float:left;">
 			{{for location in location_list:}}
 				<div id="location-list-item">
 					<h4><a href="/location/{{=location['url_title']}}">{{=location['name']}}</a></h4>
           <h5>rating, 1, 2, 3, 4, 5</h5>
+          <hr>
 				</div>
 			{{pass}}
       <br><br><p class="lead" style="text-align:center;"><a href="">view more</a></p><br><br>

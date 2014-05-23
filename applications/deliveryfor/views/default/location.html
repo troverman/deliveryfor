@@ -9,6 +9,9 @@
     a{cursor:pointer;}
     a:hover{text-decoration:none;}
     hr {margin: 0px;}
+    #item-block-list-container{text-align:center;width:100%;}
+    #item-block-list-item{border:2px solid rgb(210,210,210);display:inline-block;padding:10px;margin:7px;}
+    #item-block-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;background-color:rgb(255,255,255);}
 </style>
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="{{=URL('static','js/gmaps.js')}}"></script>
@@ -109,9 +112,9 @@ $(document).ready(function(){
 
 	<div id="location-image">
    		 
-		{{for picture in location_picture_array:}}
+		  {{for picture in location_picture_array:}}
     		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
-        {{pass}}
+      {{pass}}
    		 
     </div>	
     	
@@ -222,12 +225,17 @@ $(document).ready(function(){
   <br>
   <br>
 
+  <br>
+  <br>
+  <br>
+
+<div id="item-list-container" style="">
   {{for item in items_from_location:}}
     <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
       <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
       <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
 
-      <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id','item_id'], ':eval');">
+      <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
         <h5 class="btn">add item to order</h5>      
       </a>
     </div>
@@ -248,6 +256,27 @@ $(document).ready(function(){
     </div>
   </div>
   {{pass}}
+</div>
+
+<div id="item-block-list-container" style="display:none;">
+  {{for item in items_from_location:}}
+    <div id="item-block-list-item">
+      <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
+        <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
+        <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
+
+        <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
+          <h5 class="btn">add item to order</h5>      
+        </a>
+      </div>
+      <a>{{=item['title']}}</a><br>
+      <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
+      <br>
+    </div>
+  {{pass}}
+</div>
+
+
 
 
   <br><br><br>
@@ -261,7 +290,26 @@ $(document).ready(function(){
 <br>
 <br>
 
+
 <script>
+    $("#view-list").click(function() {
+        if ($(this).hasClass("active")){}
+        else{
+            $(this).addClass("active");
+            $("#view-table").removeClass("active");
+            $("#item-block-list-container").fadeToggle(); 
+            $("#item-list-container").fadeToggle();
+        }
+    });
+    $("#view-table").click(function() {
+        if ($(this).hasClass("active")){}
+        else{
+            $(this).addClass("active");
+            $("#view-list").removeClass("active");
+            $("#item-block-list-container").fadeToggle(); 
+            $("#item-list-container").fadeToggle();
+        }
+    });
         $("#add-item").draggable({handle:"#add-item-header", cursor:"move"}); 
 
         $("#ratings-form").show("slow");

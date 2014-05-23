@@ -617,19 +617,24 @@ def members():
 ####order#######################
 ################################
 def order():
-    order_list = db((db.member_orders.member_id == auth.user_id) & (db.member_orders.id == request.args(0))).select()
-
+    if auth.is_logged_in():
+        order_list = db((db.member_orders.member_id == auth.user_id) & (db.member_orders.id == request.args(0))).select()
+    else:
+        redirect(URL('')) 
     return dict(order_list=order_list)
     
 ################################
 ####orders######################
 ################################
 def orders():
-    order_list = db(db.member_orders.member_id == auth.user_id).select()
-    order_list_delivery = db(db.member_orders.delivery_member_id == auth.user_id).select()
-    order_items = dict()
-    for order in order_list:
-        order_items[order['id']] = db(db.member_order_items.order_id == order['id']).select()
+    if auth.is_logged_in():
+        order_list = db(db.member_orders.member_id == auth.user_id).select()
+        order_list_delivery = db(db.member_orders.delivery_member_id == auth.user_id).select()
+        order_items = dict()
+        for order in order_list:
+            order_items[order['id']] = db(db.member_order_items.order_id == order['id']).select()
+    else:
+        redirect(URL(''))        
 
 
     return dict(
@@ -851,6 +856,7 @@ def download():
 ################################
 ####call########################
 ################################ 
+@auth.requires_login()
 def call():
     return service()
 
@@ -865,4 +871,10 @@ def data():
 def test_add(a,b):
     number_sum = a+b
     return a+b
+
+@service.jsonrpc2
+def update_coordinates(lat,lng, member_id):
+    lat_lng = lat+","+lng
+    db(db.delivery_profile.user_id==member_id).update(current_location=lat_lng)
+    return 'updated'
 
