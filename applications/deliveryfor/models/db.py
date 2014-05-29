@@ -151,8 +151,8 @@ db.define_table('location_item',
 ################################
 ####location_item_image#########
 ################################
-db.define_table('location_image',
-    Field('location_item_id', 'reference locations'),
+db.define_table('location_item_image',
+    Field('location_item_id', 'string'),
     Field('picture', 'upload', uploadfield='picture_file'),
     Field('picture_file', 'blob')
 )

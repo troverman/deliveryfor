@@ -391,12 +391,15 @@ def location():
                 available_member_array.append(element[2])
                 (lat2, long2) = geocode(element[2]['current_location'])
                 username = db(db.auth_user.id == element[2]['user_id']).select()[0]['username']
-                lat_lng_array_member.append((lat2, long2, element[2]['current_location'], element[2]['current_location'], username, element[2]['delivery_radius']))
+                member_images = db(db.member_images.user_id == element[2]['user_id']).select()
+                lat_lng_array_member.append((lat2, long2, element[2]['current_location'], element[2]['current_location'], username, element[2]['delivery_radius'],member_images))
 
     location_picture_array = db(db.location_images.location_id == id_from_url).select()  
     items_from_location = db(db.location_item.location_id == id_from_url).select()
 
-    member_orders_from_location = db((db.member_orders.location_id == id_from_url) & (db.member_orders.member_id == auth.user_id)).select()
+
+    #member_orders_from_location = db((db.member_orders.location_id == id_from_url) & (db.member_orders.member_id == auth.user_id)).select()
+    member_orders_from_location = db(db.member_orders.location_id == id_from_url).select()
 
                                                                                                         
     return dict(
@@ -749,13 +752,26 @@ def ajaxlivesearch():
                                  
     return TAG[''](*items)
 
-
+################################
+####ajax_add_item_to_order######
+################################
 def ajax_add_item_to_order():
-    location_id = int(request.vars.location_id)
-    item_id = int(request.vars.item_id)
 
-    db.member_order_items.insert(member_id = auth.user_id, location_id = location_id, delivery_member_id = 1, item_id = item_id)
-    jquery = "jQuery('.flash').html('item added').slideDown().delay(1000).slideUp();"
+    location_id = str(request.vars.location_id)
+
+    item_id = request.vars.iterkeys()
+    for x in item_id:
+        if x != "location_id":
+            item_id_trim = int(x[8:])
+
+    db.member_order_items.insert(member_id = auth.user_id, item_id = item_id_trim, location_id = location_id)
+
+
+    item_row = db((db.location_item.location_id == location_id) & (db.location_item.item_id == item_id_trim)).select()
+
+    jquery = "jQuery('.flash').html('added').slideDown().delay(1000).slideUp();"
+    jquery += "jQuery('#sidebar-order-item').append(%s); " % item_row
+
     return jquery
 
 

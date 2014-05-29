@@ -12,6 +12,85 @@
     #item-block-list-container{text-align:center;width:100%;}
     #item-block-list-item{border:2px solid rgb(210,210,210);display:inline-block;padding:10px;margin:7px;}
     #item-block-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;background-color:rgb(255,255,255);}
+    .panel {
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-heading {
+      padding: 10px 15px;
+      margin: -15px -15px 15px;
+      font-size: 17.5px;
+      font-weight: 500;      
+      background-color: #f5f5f5;
+      border-bottom: 1px solid #dddddd;
+      border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
+    }
+
+    .panel-footer {
+      padding: 10px 15px;
+      margin: 15px -15px -15px;
+      background-color: #f5f5f5;
+      border-top: 1px solid #dddddd;
+      border-bottom-right-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+
+    .panel-primary {
+      border-color: #428bca;
+    }
+
+    .panel-primary .panel-heading {
+      color: #ffffff;
+      background-color: #428bca;
+      border-color: #428bca;
+    }
+
+    .panel-success {
+      border-color: #d6e9c6;
+    }
+
+    .panel-success .panel-heading {
+      color: #468847;
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+    }
+
+    .panel-warning {
+      border-color: #fbeed5;
+    }
+
+    .panel-warning .panel-heading {
+      color: #c09853;
+      background-color: #fcf8e3;
+      border-color: #fbeed5;
+    }
+
+    .panel-danger {
+      border-color: #eed3d7;
+    }
+
+    .panel-danger .panel-heading {
+      color: #b94a48;
+      background-color: #f2dede;
+      border-color: #eed3d7;
+    }
+
+    .panel-info {
+      border-color: #bce8f1;
+    }
+
+    .panel-info .panel-heading {
+      color: #3a87ad;
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+    }
 </style>
 <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 <script src="{{=URL('static','js/gmaps.js')}}"></script>
@@ -82,22 +161,43 @@ $(document).ready(function(){
 </script>      
 
 <div style="border-bottom:4px solid rgb(51,102,153);">
-    <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);border-bottom:100px soild rgb(255,255,255)" id="map" ></div>   
+    <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);" id="map" ></div>   
 </div>
-<div style="float:right;position:fixed;left:80%;max-height:400px;" class="well">
-  {{for member in member_orders_from_location:}}
-    {{=member['member_id']}}<br>
-  {{pass}}
-  {{for x in range(2):}}
-    <a href="">+</a><a href="">x</a><a href="">-</a>
-    <p class="lead">item title</p>
-    <p class="lead">item description</p>
-    <p class="lead">delivery member</p>
-    <p class="lead">price(s)</p>
-  {{pass}}
-  <hr>
-  <p class="btn"><a href="/orders/">continue</a></p>
+
+
+
+
+<div class="panel panel-default" id="sidebar-order" style="float:right;position:fixed;left:80%;width:15%;padding:15px;">
+  <div class="panel-heading">
+
+    <i class="icon-briefcase" style="float:left;margin-top:15px;"></i>
+    <h4 class="panel-title"><a href="/orders/" style="margin-left:15px;">orders</a></h4>
+
+  </div>
+  <div class="panel-body">
+
+  <div class="well" style="padding:15px;max-height:400px;overflow:scroll;">
+    {{for member in member_orders_from_location:}}
+      {{=member['member_id']}}<br>
+    {{pass}}
+    <div id="sidebar-order-item"></div>
+      <a href="">+</a><a href="">x</a><a href="">-</a>
+      <h5>item title</h5><a data-toggle="modal" href="#add-item"><i class="fa fa-pencil-square-o"></i></a>
+      <hr>
+      <p>item description</p><br>
+      <p>item details</p><br>
+      <p>price(s)</p><br>
+      <p><a href="/member/">delivery member</a></p><br>
+    <hr>
+  </div>
+  <div class="panel-footer"><p class="btn"><a href="/orders/">continue</a></p></div>
+
+  </div>
+
 </div>
+
+
+
 <div style="margin-left:5%;margin-right:5%;">
     {{if session.search_history:}}
         <a href="/search/{{=session.search_history}}">return to search</a>
@@ -167,6 +267,7 @@ $(document).ready(function(){
 				<div id="available-delivery-members-form"><br>
           <div style="margin-left:15px">
             {{for member in available_member_array:}}
+              <img src="/" style="height:64px;" class="img-polaroid">
               <a href="/member/{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}/">{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}</a><br>
               {{=member['current_location']}}<br>
               {{=member['delivery_radius']}}<br>
@@ -203,6 +304,7 @@ $(document).ready(function(){
     </div>                                                                  
                                                                                        
 <h2><a id="items-expand">items<b class="caret" id="user-caret" style=""></b><i class="icon-align-justify" style="margin-left:10px;margin-top:16px;"></i></a></h2><hr>
+<p class="lead">tags</p>
 <div id="items-form" style="margin-left:15px;">
 
   <div class="dropdown" style="float:right;margin-right:15px;">
@@ -230,31 +332,60 @@ $(document).ready(function(){
   <br>
 
 <div id="item-list-container" style="">
+  <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
   {{for item in items_from_location:}}
-    <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
-      <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
-      <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
-
-      <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
-        <h5 class="btn">add item to order</h5>      
-      </a>
+    {{picture = db(db.location_item_image.location_item_id == item['id']).select()}}
+    <a data-toggle="modal" href="#add-item-{{=item['id']}}"><img src="{{=URL('download',args=picture)}}" style="height:128px;" class="img-polaroid" /></a>
+    <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="margin-right:10px;">
+      <form style="display:none"><input type="hidden" id="" name="item_id-{{=item['id']}}" value="{{=item['id']}}" /></form> 
     </div>
-    <a>{{=item['title']}}</a><br>
-    <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
-    <br>
+    <a data-toggle="modal" href="#add-item-{{=item['id']}}"><h5>{{=item['title']}}</h5></a>
+    <p>descritpion</p>
+    <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
 
-  <div class="modal fade" id="add-item" style="display:none;">
-    <div class="modal-header" id="add-item-header">
+    <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
+    <hr><br>
+
+  <div class="modal fade" id="add-item-{{=item['id']}}" style="display:none;">
+    <div class="modal-header" id="add-item-{{=item['id']}}-header">
       <a class="close" data-dismiss="modal">×</a>
       <h3>add {{=item['title']}}</h3>
     </div>
     <br>
     <div class="modal-body" style="">
-      available delivery drivers.... select one bro
+
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      options and stuff<br><br>
+      <hr>
+
+        {{for member in available_member_array:}}
+              <a class="btn">select</a>
+              <a href="/member/{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}/">{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}</a><br>
+              {{=member['current_location']}}<br>
+              {{=member['delivery_radius']}}<br>
+              {{=member['home']}}<br>
+              {{=member['max_radius_from_home']}}<br>
+              ratings<br>
+              average<br>
+              <br><br>
+            {{pass}}
     </div>
     <div class="modal-footer">
+      <a data-toggle="modal" href="#add-item" onclick="ajax('/ajax_add_item_to_order/', ['item_id-{{=item['id']}}','location_id'], ':eval');$('#add-item-{{=item['id']}}').modal('hide');">
+        <h5 class="btn">add item to order</h5>      
+      </a>
     </div>
   </div>
+  <script>
+          $("#add-item-{{=item['id']}}").draggable({handle:"#add-item-{{=item['id']}}-header", cursor:"move"}); 
+  </script>
   {{pass}}
 </div>
 
@@ -262,15 +393,12 @@ $(document).ready(function(){
   {{for item in items_from_location:}}
     <div id="item-block-list-item">
       <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="float:left;margin-right:10px;">
-        <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
-        <form style="display:none"><input type="hidden" id="" name="item_id" value="{{=item['id']}}" /></form> 
-
-        <a data-toggle="modal" href="#add-tiem" onclick="ajax('/ajax_add_item_to_order/', ['location_id'], ':eval');">
-          <h5 class="btn">add item to order</h5>      
-        </a>
+        {{picture = db(db.location_item_image.location_item_id == item['id']).select()}}
+        <a data-toggle="modal" href="#add-item-{{=item['id']}}"><img src="{{=URL('download',args=picture)}}" style="height:128px;" class="img-polaroid" /></a>
       </div>
-      <a>{{=item['title']}}</a><br>
+      <a data-toggle="modal" href="#add-item-{{=item['id']}}"><h5>{{=item['title']}}</h5></a><br>
       <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
+      <p>descritpion</p><br>
       <br>
     </div>
   {{pass}}
@@ -310,7 +438,6 @@ $(document).ready(function(){
             $("#item-list-container").fadeToggle();
         }
     });
-        $("#add-item").draggable({handle:"#add-item-header", cursor:"move"}); 
 
         $("#ratings-form").show("slow");
         $("#ratings-form").hide();
