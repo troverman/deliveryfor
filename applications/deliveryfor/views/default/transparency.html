@@ -28,37 +28,60 @@
 <br>
 <div style="margin-left:5%;margin-right:5%">
         
-    <h2>revenue</h2><hr>
-    <h4>donations</h4>
-    <h4>fees</h4>
-	<h4>promotions</h4>
-	<h4>ad removal</h4>
 
+    <div style="border:1px solid rgb(200,200,200); padding:15px;display:inline-block;width:45%;float:left;margin-right:3%;">
 
-    
-    <h2>costs</h2><hr>
-    <h2>webhosting</h2>
-    <h4>openshift</h4>
-    <h2>advertisement</h2>
-    <h4>google ads</h4>
-    <h4>facebook ads</h4>
-    <h4>youtube ads</h4>
-    <h4>lealr ads</h4>
-    <h2>employment</h2>
-    <h4>salary</h4>
-    <h2>givingfor</h2>
-    <h4>donations to project1</h4>
-    <h4>donations to project2</h4>
-    <h4>donations to project3</h4>
-    <h4><a href="http://www.voetr.com/committee/givingfor/">voetr committee</a> votes</h4>
-    <h2><a href="http://www.conex.us/project/deliveryfor/">conex.us project</a></h2>
+        <h2>costs</h2><hr>
+        <h2>webhosting</h2>
+        <h4>google app engine</h4>
+        <div class="well">
+            <p>traffic statistics</p>
+        </div>
+        <h2>advertisement</h2>
+        <div class="well">
+            <h4>google ads</h4>
+            <h4>facebook ads</h4>
+            <h4>youtube ads</h4>
+            <h4>lealr ads</h4>
+        </div>
+        <h2>employment</h2>
+        <div class="well">
+            <h4>salary</h4>
+        </div>
 
-    
-    
+    </div>
+
+    <div style="border:1px solid rgb(200,200,200); padding:15px;display:inline-block;width:45%">
+        <h2>revenue</h2><hr>
+        <h4>donations</h4>
+        <div class="well">
+            <a>transaction -- amount</a>
+        </div>
+    	<h4>promotions</h4>
+        <div class="well">
+            <a>promotion -- amount</a>
+        </div>
+    	<h4>ad removal</h4>
+        <div class="well">
+            {{for x in range(8):}}
+                <p>{{=x}}</p><br>
+            {{pass}}
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+
+    <br><br><br>
+
+        <h2>givingfor</h2>
+        <a class="btn">donate</a>
+        <h4>donations to project1</h4>
+        <h4>donations to project2</h4>
+        <h4>donations to project3</h4>
+
     graph of costs<hr>
     
             
-<script type="text/javascript">
+    <script type="text/javascript">
                     {{an_array=[]}}
                     {{import time}}
                     {{array = [1,2,3,4,5]}}
@@ -160,14 +183,21 @@
                             
                 
                     });	
-</script>
-1<div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
+    </script>
+    <div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
     
+    <br><br>
+    <h4><a href="http://www.voetr.com/committee/givingfor/">voetr committee</a> votes</h4>
+    <h4><a href="http://www.conex.us/project/deliveryfor/">conex.us project</a></h4>
+
+    <p>do you think this is an effective way of allocating resources? check out the <a href="http://www.voetr.com/committee/deliveryfor/">voetr committee</a> if you have any input.</p>
     
-    do you think this is an effective way of allocating resources? check out the <a href="http://www.voetr.com/committee/deliveryfor">voetr committee</a> if you have any input.<br>
+    <br><br>
+
+    <p>deliveryfor is also <a href="">opensource</a></p>
+    <br>
     
-    deliveryfor is also <a href="">opensource</a><br>
-    
-    want to donate? <a href="">givingfor</a><br>
+    <p>want to donate? <a href="">givingfor</a></p>
+    <br>
 
 </div>

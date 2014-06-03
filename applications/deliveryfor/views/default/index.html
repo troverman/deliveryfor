@@ -427,10 +427,11 @@
     	<h4 style="text-align:left;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
     	<h4 style="text-align:left;">item tags</h4><hr>
         <div id="project-list-container">
-            {{for item in range(5):}}
+            {{for item in item_list:}}
             <div id="project-list-item">
                 <img class="img-polaroid" src="/download/" style="height:128px"/><br>
-                <h4><a href="/item/">item {{=item}}</a></h4>
+                <h4><a href="/item/">{{=item['title']}}</a></h4>
+                <p>item location</p>
                 <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
                 <br>
             </div>

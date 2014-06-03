@@ -50,7 +50,35 @@
 		border-bottom:1px solid rgb(235,235,238) 
 }
 </style>
-<div id="location-image">  		 
+<script type="text/javascript" src="{{=URL(request.application,'static','js/jquery.tagsinput.js')}}"></script>  
+<link rel="stylesheet" type="text/css" href="/deliveryfor/static/css/jquery.tagsinput.css" />
+
+<script>
+    function onAddTag_marketplace(tag) {
+        ajax('ajax_add_tag_collection', ['collection_add_tag_form'], ':eval');
+    }
+    $(document).ready(function(){      
+    $('#sidebar_add_tag_form').tagsInput({
+        onAddTag:onAddTag_marketplace,
+        onRemoveTag:onAddTag_marketplace,
+        'defaultText':'tags',
+        'width':'auto',
+        'height':'auto'     
+    });                                                   
+        $("#collapse-left").click(function() {  
+            $("#left").fadeToggle(300);
+            $("#collapsed-left").delay(300).fadeToggle(300);
+        });
+        $("#open-left").click(function() {  
+            $("#collapsed-left").fadeOut(300);  
+            $("#left").delay(300).fadeIn(300);  
+        });
+    $("#close-ad").click(function() {       
+        $("#ad_block").fadeToggle();        
+    });
+    });
+</script>  
+<div id="item-image">  		 
 	{{for picture in item_picture_array:}}
 		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
 	{{pass}} 		 
@@ -67,12 +95,37 @@
 
 <div id="left">
     <a id="collapse-left"> <h5 style="margin:0px;padding:3px;" title="minimize"> << </h5> </a>
-    item tags<br>
-	{{for x in range(25):}}
-    	<p><a>tag {{=x}}</a></p>
-    {{pass}}
-	<br>
+    <br>
+    filters<br>
+    filters<br>
+    filters<br>
+
+  <div style="margin-right:16px;" id="div_sidebar_add_tag"><input name = "sidebar_add_tag" type="text" id="sidebar_add_tag_form" /></div><br>   
+    <hr style="margin-top:10px;"><br>
+    <div id="tag-list">
+      {{for tag in reversed(tag_item_list_sorted_by_total_count):}}
+        <div id="tag-list-item" style="margin-right:15px;font-family:ubuntu;">                         
+          <a href="/tags/{{=tag[0]}}" >{{=tag[0]}}</a>
+          <a style="color:rgb(210,210,210);" href="/tags/{{=tag[0]}}"> ( {{=tag[1]}} ) </a>
+          <a id="plus-{{=tag[0]}}" class="filter_tag_item" onclick="add_tag_sidebar('{{=tag[0]}}');" >+</a>                        
+          <script>
+            function add_tag_sidebar(tag){
+              if ($('#sidebar_add_tag_form').tagExist(tag)) {
+                $('#sidebar_add_tag_form').removeTag(tag);
+              }
+              else{
+                $('#sidebar_add_tag_form').addTag(tag);
+              }
+            }
+          </script>
+        </div>
+      {{pass}}
+    <br>
+    <p style="text-align:center;"><a>view more</a></p>
+  </div>
+
 </div>
+
 <br>
 <div id="right">
 	{{for x in range(10):}}
@@ -88,8 +141,8 @@
 <div id="contentwrapper">
     <div id="content" style="border-right:1px solid rgb(238,238,238);padding:5px;">
 		filters<br>
-		{{for x in range(10):}}
-			<h4><a href="/item/{{=x}}">{{=x}}</a></h4>
+		{{for item in location_items:}}
+			<h4><a href="/item/{{=item}}">{{=item['title']}}</a></h4>
 		{{pass}}
     </div>
 </div>

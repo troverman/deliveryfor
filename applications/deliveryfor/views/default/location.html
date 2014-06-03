@@ -122,14 +122,15 @@ $(document).ready(function(){
         map.addMarker({
         lat: {{=lat_lng[0]}},
         lng: {{=lat_lng[1]}},
+        icon: "/deliveryfor/static/images/blue.png",
         title: '{{=lat_lng[4]}}',
         infoWindow: { 
-        content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
-        <a href="/member/{{=lat_lng[4]}}/">{{=lat_lng[4]}}</a><hr>\
-        <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
-        <td>{{=lat_lng[2]}}</td></tr></table>\
-        </div></div>'
-        }
+          content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+          <p>{{=lat_lng[2]}}</p><hr>\
+          <table><tr><td>{{if lat_lng[3]:}}<img src="{{=URL('download',args=lat_lng[3][random.randint(0,len(lat_lng[3])-1)])}}" style="height:64px;" class="img-polaroid" />{{pass}}</td>\
+          <td>{{=lat_lng[4]}}</td></tr></table>\
+          </div></div>'
+          }
         });
         map.drawCircle({
         lat: {{=lat_lng[0]}},
@@ -164,11 +165,8 @@ $(document).ready(function(){
     <div style="width:100%; height:300px;border-bottom:4px solid rgb(51,51,51);" id="map" ></div>   
 </div>
 
-
-
-
-<div class="panel panel-default" id="sidebar-order" style="float:right;position:fixed;left:80%;width:15%;padding:15px;">
-  <div class="panel-heading">
+<div class="panel panel-default" id="sidebar-order" style="float:right;position:fixed;left:80%;width:15%;padding:15px;z-index:1001;">
+  <div class="panel-heading" id="sidebar-header">
 
     <i class="icon-briefcase" style="float:left;margin-top:15px;"></i>
     <h4 class="panel-title"><a href="/orders/" style="margin-left:15px;">orders</a></h4>
@@ -213,7 +211,7 @@ $(document).ready(function(){
 	<div id="location-image">
    		 
 		  {{for picture in location_picture_array:}}
-    		<a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
+    	   <a href="#"><img src="{{=URL('download',args=picture['picture'])}}" style="height:128px;" class="img-polaroid" /></a>
       {{pass}}
    		 
     </div>	
@@ -257,8 +255,6 @@ $(document).ready(function(){
           cash per time<br>
           average delivery member saturation<br>
           most popular times<br>
-
-
 
         </div>
         <hr><br>	
@@ -334,8 +330,8 @@ $(document).ready(function(){
 <div id="item-list-container" style="">
   <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
   {{for item in items_from_location:}}
-    {{picture = db(db.location_item_image.location_item_id == item['id']).select()}}
-    <a data-toggle="modal" href="#add-item-{{=item['id']}}"><img src="{{=URL('download',args=picture)}}" style="height:128px;" class="img-polaroid" /></a>
+    {{picture = db(db.location_item_image.location_item_id == item['id']).select()[0]}}
+    <a data-toggle="modal" href="#add-item-{{=item['id']}}" style="display:inline-block;"><img src="{{=URL('download',args=picture['picture'])}}" style="height:96px;" class="img-polaroid" /></a>
     <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="margin-right:10px;">
       <form style="display:none"><input type="hidden" id="" name="item_id-{{=item['id']}}" value="{{=item['id']}}" /></form> 
     </div>
@@ -420,6 +416,7 @@ $(document).ready(function(){
 
 
 <script>
+    $("#sidebar-order").draggable({handle:"#sidebar-header", cursor:"move"}); 
     $("#view-list").click(function() {
         if ($(this).hasClass("active")){}
         else{

@@ -281,6 +281,7 @@ def index():
         for tag in tag_list:
             location_tag_list_array.append(tag['tag'])   
 
+    item_list = db(db.location_item).select()
 
 
     set_location_tag_list = set(location_tag_list_array)
@@ -324,6 +325,7 @@ def index():
         member_picture_array=member_picture_array,
         location_array=location_array,
         index_block_list=index_block_list,
+        item_list=item_list,
     )
 
     
@@ -337,9 +339,39 @@ def item():
 ####items#######################
 ################################
 def items():
-    item_picture_array = db(db.location_images).select()                                                                                                        
+    location_items = db(db.location_item).select() 
+    item_picture_array = db(db.location_item_image).select()    
 
-    return dict(item_picture_array=item_picture_array)
+
+
+    item_tag_list = []
+    item_picture_list = []
+    for item in location_items:
+        item_tag_list.append(db(db.location_item_tag.location_item_id == item['id']).select())
+        item_picture_list.append(db(db.location_item_image.location_item_id == item['id']).select())
+
+    item_tag_list_array = []
+    for tag_list in item_tag_list:
+        for tag in tag_list:
+            item_tag_list_array.append(tag['tag'])   
+
+    set_item_tag_list = set(item_tag_list_array)
+    tag_item_list_unsorted = list(set_item_tag_list)
+    combined_count_and_tag_array=[]
+    for tag in tag_item_list_unsorted:
+        combined_count_and_tag_array.append([tag, item_tag_list_array.count(tag)])
+    from operator import itemgetter
+    tag_item_list_sorted_by_total_count = sorted(combined_count_and_tag_array, key=itemgetter(1))  
+
+
+
+                                                                                                    
+
+    return dict(
+        item_picture_array=item_picture_array,
+        location_items=location_items,
+        tag_item_list_sorted_by_total_count=tag_item_list_sorted_by_total_count,
+    )
           
 ################################
 ####location####################
@@ -767,10 +799,11 @@ def ajax_add_item_to_order():
     db.member_order_items.insert(member_id = auth.user_id, item_id = item_id_trim, location_id = location_id)
 
 
-    item_row = db((db.location_item.location_id == location_id) & (db.location_item.item_id == item_id_trim)).select()
+    item_row = db((db.location_item.location_id == location_id) & (db.location_item.id == item_id_trim)).select()[0]
+    item = BR() + DIV(XML(item_row['title']))
 
     jquery = "jQuery('.flash').html('added').slideDown().delay(1000).slideUp();"
-    jquery += "jQuery('#sidebar-order-item').append(%s); " % item_row
+    jquery += "jQuery('#sidebar-order-item').append('%s'); " % item
 
     return jquery
 
