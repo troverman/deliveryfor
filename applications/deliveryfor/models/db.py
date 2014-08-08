@@ -48,10 +48,20 @@ auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 db.auth_user.first_name.readable = False
 db.auth_user.last_name.readable = False 
-
+auth.settings.allow_basic_login = True
 ################################################################
 ####database_tables#############################################
 ################################################################
+
+
+################################
+####member_location_history#####
+################################ 
+db.define_table('member_location_history',
+  Field('member_id', 'reference auth_user', default=auth.user_id, readable=False, writable=False),
+  Field('current_time', 'datetime', default=request.now),
+  Field('current_location','string'),
+)
 
 ################################
 ####delivery_profile############
@@ -94,7 +104,6 @@ db.define_table('item_images',
 db.define_table('locations',
     Field('url_title','string'),
     Field('name','string'),
-    Field('days_of_operation','string'),
     Field('description','string'),
     Field('address', 'string', requires=IS_NOT_EMPTY()),
     Field('city', 'string', requires=IS_NOT_EMPTY()),
@@ -111,13 +120,13 @@ db.define_table('locations',
 ################################
 ####location_hours##############
 ################################
-#db.define_table('location_hours',
-#    Field('location_id', 'reference locations'),
-#    Field('opening_time', 'time'),
-#    Field('closing_time', 'time'),
-#    Field('week_day', 'datetime')
- #   Field('specific_day', 'datetime'),
-#)
+db.define_table('location_hours',
+    Field('location_id', 'reference locations'),
+    Field('opening_time', 'time'),
+    Field('closing_time', 'time'),
+    Field('week_day', 'string')
+    Field('specific_day', 'date'),
+)
 
 ################################
 ####location_images#############
@@ -146,6 +155,8 @@ location_category_array_modified.append('(None)')
 db.define_table('location_item',
     Field('location_id','string'),
     Field('title','string'),
+    Field('description','string'),
+
 )
 
 ################################

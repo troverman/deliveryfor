@@ -45,6 +45,7 @@
     html, body {
       height: 100%;
     }
+    body{min-width:1056px;}
     #container{
       border-bottom:2px solid rgb(190,190,190);
       width:100%;
@@ -92,7 +93,7 @@
       color:rgb(71,71,71);
     }
     ul.nav_bar:hover{background-color:rgb(10,10,10);}
-    img.logo_image{height:80px; border:rgb(70,70,70) solid 2px;}       
+    img.logo_image{height:80px;width:80px; border:rgb(70,70,70) solid 2px;}       
     b.caret{border-top:4px solid rgb(198,206,204);}
     table.modified_table{
       margin-top:0px;
@@ -128,7 +129,7 @@
 <!-- body ================================================== -->
 <body>
 <!-- navbar ================================================== -->
-<div class="navbar navbar-inverse navbar-fixed-top" style="position:relative;border-bottom:2px solid rgb(102,102,102);" id="nav_underline">
+<div class="navbar navbar-inverse navbar-fixed-top" style="position:relative;border-bottom:2px solid rgb(102,102,102);min-width:1056px;" id="nav_underline">
   <div class="flash">{{=response.flash or ''}}</div>
   <div class="navbar-inner" style="background-image: linear-gradient(to bottom, rgb(51, 51, 51), rgb(34, 34, 34));">
     <div class="container">
@@ -229,7 +230,6 @@
                 </div>
                 <div id="footer-links" class="pull-right" style="margin-top:15px;margin-right:20px;">     
                     <a class="link_footer", href="/about/">about</a>,
-                    <a class="link_footer", href="/blog/">blog</a>,
                     <a class="link_footer", href="/contact/">contact</a>,
                     <a class="link_footer", href="/faq/">faq</a>,
                     <a class="link_footer", href="/items/">items</a>,

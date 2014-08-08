@@ -72,8 +72,8 @@
         border-bottom:1px solid rgb(225,225,225);
     }
     #project-list-container{text-align:center;width:100%;}
-    #project-list-item{border:2px solid rgb(180,180,180);display:inline-block;padding:10px;margin:7px;}
-    #project-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;background-color:rgb(255,255,255);}
+    #project-list-item{border:2px solid rgb(206,206,206);display:inline-block;padding:10px;margin:7px;border-radius:5px;}
+    #project-list-item:hover{border:2px solid rgb(140,140,140);display:inline-block;padding:11px;margin:7px;border-radius:5px;background-color:rgb(255,255,255);}
 
 </style>
 
@@ -86,7 +86,9 @@
         <div class="jTscrollerContainer">
             <div class="jTscroller">
                 {{for picture in member_picture_array:}}
-                    <a href="#"><img src="/download/{{=picture}}/" style="height:96px;" /></a>
+                    {{member_id=picture['user_id']}}
+                    {{member_name=db(db.auth_user.id==member_id).select()[0]['username']}}
+                    <a href="/member/{{=member_name}}/"><img src="/download/{{=picture['picture']}}/" style="height:96px;" /></a>
                 {{pass}}
             </div>
         </div>
@@ -200,48 +202,48 @@
         {{pass}}
         <br>
         <hr>  
-<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-<script src="{{=URL('static','js/gmaps.js')}}"></script>
-        <!--
-<script>   
-  $(document).ready(function(){                                                         
-  map = new GMaps({
-  {{lat_sum=0}}
-  {{lng_sum=0}}
-  {{counting = 0}}
-  {{for latlng in delivery_member_array:}}
-    {{counting = counting + 1}}
-    {{lat_sum=lat_sum + latlng[0]}}
-    {{lng_sum=lng_sum + latlng[1]}}                                        
-  {{pass}}
-          
-  {{if len(delivery_member_array) == 0:}}   
-    {{lng_avg = 0}}
-    {{lat_avg = 0}}
-  {{else:}}
-    {{lng_avg = lng_sum / counting}}
-    {{lat_avg = lat_sum / counting}}      
-  {{pass}}
-  div: '#map',
-  //zoom:7, 
-  lat:{{=lat_avg}},
-  lng:{{=lng_avg}}    
-  }); 
-    {{import random}}       
-    {{for lat_lng in delivery_member_array:}}
-      map.addMarker({
-      lat: {{=lat_lng[0]}},
-      lng: {{=lat_lng[1]}},
-      title: '{{=lat_lng[2]}}',
-      infoWindow: { 
-      content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
-      <table><tr><td>{{=lat_lng[2]}}</td></tr></table>\
-      </div></div>'
-      }
-      });
-    {{pass}} 
-  map.fitZoom();
-  }); 
+    <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script src="{{=URL('static','js/gmaps.js')}}"></script>
+            <!--
+    <script>   
+      $(document).ready(function(){                                                         
+      map = new GMaps({
+      {{lat_sum=0}}
+      {{lng_sum=0}}
+      {{counting = 0}}
+      {{for latlng in delivery_member_array:}}
+        {{counting = counting + 1}}
+        {{lat_sum=lat_sum + latlng[0]}}
+        {{lng_sum=lng_sum + latlng[1]}}                                        
+      {{pass}}
+              
+      {{if len(delivery_member_array) == 0:}}   
+        {{lng_avg = 0}}
+        {{lat_avg = 0}}
+      {{else:}}
+        {{lng_avg = lng_sum / counting}}
+        {{lat_avg = lat_sum / counting}}      
+      {{pass}}
+      div: '#map',
+      //zoom:7, 
+      lat:{{=lat_avg}},
+      lng:{{=lng_avg}}    
+      }); 
+        {{import random}}       
+        {{for lat_lng in delivery_member_array:}}
+          map.addMarker({
+          lat: {{=lat_lng[0]}},
+          lng: {{=lat_lng[1]}},
+          title: '{{=lat_lng[2]}}',
+          infoWindow: { 
+          content: '<div class = "MarkerPopUp" style="width: 400px;height:250px;"><div class = "MarkerContext">\
+          <table><tr><td>{{=lat_lng[2]}}</td></tr></table>\
+          </div></div>'
+          }
+          });
+        {{pass}} 
+      map.fitZoom();
+      }); 
 </script>-->
         <script>   
           $(document).ready(function(){                                                         
@@ -389,16 +391,10 @@
         </div>
         <hr>
 <br>
-<!--
-<div>
-    this is some content
-    <div id="placeholder" style="width:75%;height:250px;display: table;margin: 0 auto;"></div>
-</div>
--->
 <br>
 <br>
 
-        <h4 style="text-align:left;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
+        <h4 style="text-align:left;"><a href="/locations/" style="margin-right:15px;">available locations</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a> (near location)</h4>
         <p style="text-align:left;">
             {{for tag in reversed(tag_location_list_sorted_by_total_count):}}
             <div id="tag-list-item" style="margin-right:15px;font-family:ubuntu;float:left;">                         
@@ -406,8 +402,6 @@
               <a style="color:rgb(210,210,210);" href="/tags/{{=tag[0]}}"> ( {{=tag[1]}} ) </a>
             </div>
             {{pass}}
-
-
         </p>
         <br><br>
         <div id="project-list-container">
@@ -422,10 +416,20 @@
             </div>
             {{pass}}
         </div>
+
         <br><br><br>
-        
-    	<h4 style="text-align:left;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a></h4>
-    	<h4 style="text-align:left;">item tags</h4><hr>
+        <hr>
+        <br><br><br>
+
+    	<h4 style="text-align:left;"><a href="/items/" style="margin-right:15px;">available items</a><a id="geolocate" class="geolocate btn" style="margin-top:2px;margin-right:6px;"><i class="icon-map-marker"></i></a> (near location)</h4>
+        <p style="text-align:left;">
+            {{for tag in reversed(tag_item_list_sorted_by_total_count):}}
+            <div id="tag-list-item" style="margin-right:15px;font-family:ubuntu;float:left;">                         
+              <a href="/tags/{{=tag[0]}}" >{{=tag[0]}}</a>
+              <a style="color:rgb(210,210,210);" href="/tags/{{=tag[0]}}"> ( {{=tag[1]}} ) </a>
+            </div>
+            {{pass}}
+        </p>        
         <div id="project-list-container">
             {{for item in item_list:}}
             <div id="project-list-item">

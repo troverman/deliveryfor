@@ -263,7 +263,7 @@ def index():
     elif search_form.errors:
         response.flash = 'There\'s a problem!'
     session.flash = 'welcome to deliveryfor!'
-    member_picture_array = [r.picture for r in db(db.member_images).select(db.member_images.picture)] 
+    member_picture_array = db(db.member_images).select() 
 
     location_list = db(db.locations).select()
     location_array = []
@@ -304,6 +304,23 @@ def index():
 
 
 
+    item_tag_list = []
+    for item in item_list:
+        item_tag_list.append(db(db.location_item_tag.location_item_id == item['id']).select())
+        item_tag=db(db.location_item_tag.location_item_id == item['id']).select()
+    item_tag_list_array = []
+    for tag_list in item_tag_list:
+        for tag in tag_list:
+            item_tag_list_array.append(tag['tag'])  
+
+    set_item_tag_list = set(item_tag_list_array)
+    tag_item_list_unsorted = list(set_item_tag_list)
+    combined_count_and_tag_array=[]
+    for tag in tag_item_list_unsorted:
+        combined_count_and_tag_array.append([tag, item_tag_list_array.count(tag)])
+    from operator import itemgetter
+    tag_item_list_sorted_by_total_count = sorted(combined_count_and_tag_array, key=itemgetter(1))  
+
 
 
     #for location in location_list:
@@ -318,6 +335,7 @@ def index():
     
     return dict(
         tag_location_list_sorted_by_total_count=tag_location_list_sorted_by_total_count,
+        tag_item_list_sorted_by_total_count=tag_item_list_sorted_by_total_count,
         index_header_block_list=index_header_block_list,
         delivery_member_array=delivery_member_array,
         search_form=search_form,
@@ -433,6 +451,7 @@ def location():
     #member_orders_from_location = db((db.member_orders.location_id == id_from_url) & (db.member_orders.member_id == auth.user_id)).select()
     member_orders_from_location = db(db.member_orders.location_id == id_from_url).select()
 
+    hours_of_operation = db(db.location_hours.location_id == id_from_url).select()
                                                                                                         
     return dict(
     location_picture_array=location_picture_array,
@@ -444,6 +463,7 @@ def location():
     lat_lng_array_location=lat_lng_array_location,
     items_from_location=items_from_location,
     member_orders_from_location=member_orders_from_location,
+    hours_of_operation=hours_of_operation,
     )
 
 
@@ -454,11 +474,6 @@ def locations():
     location_list = db(db.locations).select()
     location_picture_array = db(db.location_images).select()   
     delivery_member_array = db(db.delivery_profile).select()
-
-
-
-
-
 
 
     location_tag_list = []
@@ -479,15 +494,6 @@ def locations():
         combined_count_and_tag_array.append([tag, location_tag_list_array.count(tag)])
     from operator import itemgetter
     tag_location_list_sorted_by_total_count = sorted(combined_count_and_tag_array, key=itemgetter(1))  
-
-
-
-
-
-
-
-
-
 
 
 
@@ -905,7 +911,7 @@ def download():
 ################################
 ####call########################
 ################################ 
-@auth.requires_login()
+#@auth.requires_login()
 def call():
     return service()
 
@@ -916,14 +922,34 @@ def call():
 def data():
     return dict(form=crud())
 
-@service.jsonrpc2
-def test_add(a,b):
-    number_sum = a+b
-    return a+b
 
-@service.jsonrpc2
-def update_coordinates(lat,lng, member_id):
+@service.jsonrpc
+def update_coordinates(membername, password, lat, lng):
+    membername=str(membername)
+    password=str(password)
+    lat=str(lat)
+    lng=str(lng)
+
+    datetime=request.now
     lat_lng = lat+","+lng
+    member = auth.login_bare(membername, password)
+    if not member:
+        return "authentication failed" 
+    else:
+        member_id=auth.user_id
+
+    db.member_location_history.insert(member_id=member_id, current_time=datetime, current_location=lat_lng)
     db(db.delivery_profile.user_id==member_id).update(current_location=lat_lng)
     return 'updated'
+
+@service.jsonrpc
+def check_auth(membername,password):
+    membername=str(membername)
+    password=str(password)
+    member = auth.login_bare(membername, password)
+    if not member:
+        status = 'false'
+    else:
+        status = 'true'
+    return status
 

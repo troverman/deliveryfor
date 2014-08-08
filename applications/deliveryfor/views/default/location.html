@@ -10,8 +10,9 @@
     a:hover{text-decoration:none;}
     hr {margin: 0px;}
     #item-block-list-container{text-align:center;width:100%;}
-    #item-block-list-item{border:2px solid rgb(210,210,210);display:inline-block;padding:10px;margin:7px;}
-    #item-block-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;background-color:rgb(255,255,255);}
+    #item-block-list-item{border:2px solid rgb(210,210,210);display:inline-block;padding:10px;margin:7px;border-radius:5px;}
+    #item-block-list-item:hover{border:2px solid rgb(110,110,110);display:inline-block;padding:11px;margin:7px;border-radius:5px;background-color:rgb(255,255,255);}
+    
     .panel {
       padding: 15px;
       margin-bottom: 20px;
@@ -219,7 +220,7 @@ $(document).ready(function(){
 <div id="location-top-block" style="margin-left:15px;">
 	<br>   
     <p class="lead">
-	{{tag_array = db(db.location_tag.location_id == location_from_url[0]['id']).select()}}
+    {{tag_array = db(db.location_tag.location_id == location_from_url[0]['id']).select()}}
     {{for count, tag in enumerate(tag_array):}}
         <a href="/tags/{{=tag['tag']}}/">{{=tag['tag']}}</a>
         {{if count != len(tag_array) - 1:}},
@@ -330,15 +331,19 @@ $(document).ready(function(){
 <div id="item-list-container" style="">
   <form style="display:none"><input type="hidden" id="" name="location_id" value="{{=location_from_url[0]['id']}}" /></form> 
   {{for item in items_from_location:}}
+    {{try:}}
     {{picture = db(db.location_item_image.location_item_id == item['id']).select()[0]}}
     <a data-toggle="modal" href="#add-item-{{=item['id']}}" style="display:inline-block;"><img src="{{=URL('download',args=picture['picture'])}}" style="height:96px;" class="img-polaroid" /></a>
+    {{except IndexError:}}
+    {{pass}}
     <div class="add-item" id="add-item-{{=location_from_url[0]['id']}}" style="margin-right:10px;">
       <form style="display:none"><input type="hidden" id="" name="item_id-{{=item['id']}}" value="{{=item['id']}}" /></form> 
     </div>
     <a data-toggle="modal" href="#add-item-{{=item['id']}}"><h5>{{=item['title']}}</h5></a>
-    <p>descritpion</p>
-    <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
-
+      {{if item['description'] is not None:}}
+        <p>{{=item['description']}}</p><br>
+      {{pass}}
+      <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
     <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
     <hr><br>
 
@@ -354,24 +359,21 @@ $(document).ready(function(){
       options and stuff<br><br>
       options and stuff<br><br>
       options and stuff<br><br>
-      options and stuff<br><br>
-      options and stuff<br><br>
-      options and stuff<br><br>
-      options and stuff<br><br>
-      options and stuff<br><br>
-      <hr>
 
+      <hr>
+        <form>
         {{for member in available_member_array:}}
-              <a class="btn">select</a>
-              <a href="/member/{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}/">{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}</a><br>
-              {{=member['current_location']}}<br>
-              {{=member['delivery_radius']}}<br>
-              {{=member['home']}}<br>
-              {{=member['max_radius_from_home']}}<br>
-              ratings<br>
-              average<br>
-              <br><br>
-            {{pass}}
+          <img src="" class="img-polaroid" style="height:32px;float:left;"/>
+              <h5><a href="/member/{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}/">{{=db(db.auth_user.id == member['user_id']).select()[0]['username']}}</a></h5>
+              <br>
+              <p>ratings(x)</p>
+              <p>fees</p>
+              <p>{{=member['current_location']}}</p>
+              <input type="radio" name="delivery-member-{{=item['id']}}" value="{{=member['id']}}">
+              <hr><br>
+        {{pass}}
+        </form>
+
     </div>
     <div class="modal-footer">
       <a data-toggle="modal" href="#add-item" onclick="ajax('/ajax_add_item_to_order/', ['item_id-{{=item['id']}}','location_id'], ':eval');$('#add-item-{{=item['id']}}').modal('hide');">
@@ -394,7 +396,10 @@ $(document).ready(function(){
       </div>
       <a data-toggle="modal" href="#add-item-{{=item['id']}}"><h5>{{=item['title']}}</h5></a><br>
       <a>{{=db(db.location_item_option.location_item_id == item['id']).select()}}</a>
-      <p>descritpion</p><br>
+      <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
+      {{if item['description'] is not None:}}
+        <p>{{=item['description']}}</p><br>
+      {{pass}}
       <br>
     </div>
   {{pass}}
